@@ -1,0 +1,1 @@
+export 'package:emc/screens/student/registration/ui/page/register.dart';

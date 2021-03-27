@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "336738796971",
+    "project_id": "emotion-chatbot",
+    "storage_bucket": "emotion-chatbot.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:336738796971:android:94381cd8e3ae3492d73eee",
+        "android_client_info": {
+          "package_name": "com.example.emc"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "336738796971-8h46o492fcqpmvk3o3hkd0gl451c0qjl.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyClTrhHlknRgcWuIg2QerYAuj1bw_sWQNU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "336738796971-8h46o492fcqpmvk3o3hkd0gl451c0qjl.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
