@@ -23,6 +23,10 @@ dependencies:
   image_cropper: ^1.4.0
   flutter_easyloading: ^3.0.0
   flutter_form_builder: ^6.0.0-nullsafety.1
+  shimmer: ^1.1.2
+  pull_to_refresh: ^1.6.4
+  table_calendar: ^3.0.0-nullsafety.1
+  pie_chart: ^5.0.0
   # flutter_form_builder:
   #   git: https://github.com/Sportner/flutter_form_builder.git 
 

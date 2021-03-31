@@ -1,6 +1,9 @@
+import 'dart:developer';
+
 import 'package:emc/auth/model/view_model/auth_model.dart';
 import 'package:emc/common_widget/emc_button.dart';
 import 'package:emc/screens/student/emotion_entry/model/view_model/emotion_entry_model.dart';
+import 'package:emc/screens/student/profile/ui/student_profile.dart';
 import 'package:flutter/material.dart';
 import 'package:emc/screens/student/emotion_entry/ui/widgets/icon_card.dart';
 import 'package:emc/screens/student/emotion_entry/ui/widgets/profile_button.dart';
@@ -27,15 +30,18 @@ class _EmotionEntryState extends State<EmotionEntry> {
   }
 
   void _onSave() async {
+    _fbKey?.currentState?.saveAndValidate();
     FocusScopeNode currentFocus = FocusScope.of(context);
     if (!currentFocus.hasPrimaryFocus) {
       currentFocus.unfocus();
     }
-    final String notes = _fbKey?.currentState?.value[EmotionEntryForm.NOTES] ?? "";
+    final String notes = (_fbKey?.currentState?.value ?? const {})[EmotionEntryForm.NOTES] ?? "";
     final String emotionString = _selectedEmotion.emotionString;
-    _fbKey.currentState.reset();
-    setState(() => _selectedEmotion = Emotion.happy);
-    await model.save(emotionString, notes);
+    bool success = await model.save(emotionString, notes);
+    if (success) {
+      _fbKey.currentState.reset();
+      setState(() => _selectedEmotion = Emotion.happy);
+    }
   }
 
   @override
@@ -45,7 +51,7 @@ class _EmotionEntryState extends State<EmotionEntry> {
       appBar: AppBar(
         actions: [
           ProfileButton(
-            onTap: () => print("Trollol"),
+            onTap: () => Navigator.pushNamed(context, StudentProfile.routeName),
           )
         ],
       ),

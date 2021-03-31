@@ -6,6 +6,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:image_cropper/image_cropper.dart';
 import '../../constant.dart';
 import 'dart:io';
+import 'dart:developer';
 
 class ProfileForm extends StatefulWidget {
   @required
@@ -20,7 +21,8 @@ class ProfileForm extends StatefulWidget {
 
 class _ProfileFormState extends State<ProfileForm> {
   File _image;
-  Future getImage() async {
+  Future getImage(dynamic state) async {
+    EasyLoading.show();
     File image;
     await ImagePicker().getImage(source: ImageSource.camera).then((pickedFile) async {
       await ImageCropper.cropImage(
@@ -32,10 +34,18 @@ class _ProfileFormState extends State<ProfileForm> {
           ratioY: 1,
         ),
       ).then((croppedImage) {
+        print("then called ${croppedImage?.path ?? 'trojan niggahorse'}");
         image = File(croppedImage?.path);
       });
     }).catchError((error) => EasyLoading.showError("Error: $error"));
-    return image;
+
+    if (image != null) {
+      setState(() {
+        state.didChange(_image);
+        _image = image;
+      });
+    }
+    EasyLoading.dismiss();
   }
 
   @override
@@ -53,7 +63,9 @@ class _ProfileFormState extends State<ProfileForm> {
                 child: Stack(
                   children: [
                     GestureDetector(
-                      onTap: getImage,
+                      onTap: () async {
+                        await getImage(state);
+                      },
                       child: ClipOval(
                         child: _image == null ? Image.asset('assets/images/default_avatar.png') : Image.file(_image),
                       ),
@@ -66,9 +78,7 @@ class _ProfileFormState extends State<ProfileForm> {
                           shape: MaterialStateProperty.all<CircleBorder>(CircleBorder()),
                         ),
                         onPressed: () async {
-                          _image = await getImage();
-                          state.didChange(_image?.path);
-                          setState(() {});
+                          await getImage(state);
                         },
                         child: Icon(Icons.camera_alt),
                       ),
@@ -102,7 +112,9 @@ class _ProfileFormState extends State<ProfileForm> {
               labelText: "Matric",
             ),
           ),
-          // FormBuilderDateTimePicker(),
+          // FormBuilderDateTimePicker(
+            
+          // ),
         ],
       ),
     );

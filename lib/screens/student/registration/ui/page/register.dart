@@ -8,6 +8,7 @@ import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:emc/common_widget/emc_scaffold.dart';
 
 class RegisterScreen extends StatefulWidget {
+  static const String routeName = "/registerScreen";
   @override
   _RegisterScreenState createState() => _RegisterScreenState();
 }
@@ -49,6 +50,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
               password : FormUtil.getFormValue(_accountFormKey, AccountFormField.PASSWORD),
               matric : FormUtil.getFormValue(_profileFormKey, ProfileFormField.MATRIC),
               name : FormUtil.getFormValue(_profileFormKey, ProfileFormField.NAME),
+              profilePicture: FormUtil.getFormValue(_profileFormKey, ProfileFormField.PROFILE_PICTURE),
             );
           } else {
             _currentStep = 0;

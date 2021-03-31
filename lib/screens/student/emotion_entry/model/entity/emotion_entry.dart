@@ -1,7 +1,7 @@
 class EmotionEntry {
   String emotion;
   String notes;
-  String timestamp;
+  num timestamp;
   String uid;
 
   EmotionEntry({this.emotion, this.notes, this.timestamp, this.uid});

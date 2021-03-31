@@ -15,7 +15,7 @@ class EmotionEntryModel {
     EmotionEntry emotion = new EmotionEntry(
       emotion: emotionString ?? "N/A",
       notes: notes ?? "-",
-      timestamp: DateTime.now().millisecondsSinceEpoch.toString(),
+      timestamp: DateTime.now().millisecondsSinceEpoch,
       uid: uid,
     );
     print("DateTime.now().millisecondsSinceEpoch.toString() ${DateTime.now().millisecondsSinceEpoch.toString()}");
@@ -26,5 +26,6 @@ class EmotionEntryModel {
       EasyLoading.showError("Couldn't save, please try again");
     }
     EasyLoading.dismiss();
+    return success;
   }
 }

@@ -32,6 +32,7 @@ class Appointment extends StatelessWidget {
           ],
         ),
         floatingActionButton: FloatingActionButton(
+          heroTag: UniqueKey(),
           child: Icon(
             Icons.add,
             color: EmcColors.lightPink,
