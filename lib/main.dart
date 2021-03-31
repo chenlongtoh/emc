@@ -30,30 +30,30 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final Future<FirebaseApp> _initialization = Firebase.initializeApp();
-    return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        accentColor: EmcColors.pink,
-        scaffoldBackgroundColor: Colors.transparent,
-        bottomNavigationBarTheme: BottomNavigationBarThemeData(
-          backgroundColor: Colors.white,
-          selectedItemColor: EmcColors.pink,
-          unselectedItemColor: Colors.black,
-          elevation: 1,
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider<AuthModel>(create: (_) => AuthModel()),
+      ],
+      child: MaterialApp(
+        title: 'Flutter Demo',
+        theme: ThemeData(
+          accentColor: EmcColors.pink,
+          scaffoldBackgroundColor: Colors.transparent,
+          bottomNavigationBarTheme: BottomNavigationBarThemeData(
+            backgroundColor: Colors.white,
+            selectedItemColor: EmcColors.pink,
+            unselectedItemColor: Colors.black,
+            elevation: 1,
+          ),
+          appBarTheme: AppBarTheme(
+            color: Colors.transparent,
+            elevation: 0, // This removes the shadow from all App Bars.
+          ),
         ),
-        appBarTheme: AppBarTheme(
-          color: Colors.transparent,
-          elevation: 0, // This removes the shadow from all App Bars.
-        ),
-      ),
-      navigatorKey: NavigationService.instance.navigationKey,
-      onGenerateRoute: EmcRouter.onGenerateRoute,
-      debugShowCheckedModeBanner: false,
-      home: MultiProvider(
-        providers: [
-          ChangeNotifierProvider<AuthModel>(create: (_) => AuthModel()),
-        ],
-        child: FutureBuilder(
+        navigatorKey: NavigationService.instance.navigationKey,
+        onGenerateRoute: EmcRouter.onGenerateRoute,
+        debugShowCheckedModeBanner: false,
+        home: FutureBuilder(
           future: _initialization,
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.done) {
@@ -72,8 +72,8 @@ class MyApp extends StatelessWidget {
             }
           },
         ),
+        builder: EasyLoading.init(),
       ),
-      builder: EasyLoading.init(),
     );
   }
 }

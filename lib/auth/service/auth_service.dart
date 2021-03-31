@@ -1,4 +1,8 @@
+import 'dart:developer';
+
+import 'package:emc/auth/model/entity/emc_user.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -10,73 +14,39 @@ class AuthService {
         email: email,
         password: password,
       );
-      print("UserCredential => $userCredential");
       return userCredential?.user;
     } on FirebaseAuthException catch (e) {
-      print("E ${e.code}");
       if (e.code == 'user-not-found') {
-        EasyLoading.showError("No user found for that email.");
+        EasyLoading.showError("No user found, please try again");
       } else if (e.code == 'wrong-password') {
-        EasyLoading.showError("Wrong password provided for that user.");
+        EasyLoading.showError("Wrong password, please try again");
+      } else {
+        EasyLoading.showError(e.message);
       }
     }
+    return null;
   }
 
-  static Future register() async {
+  static Future getEmcUser(String uid) async {
     try {
-      await FirebaseAuth.instance
-          .createUserWithEmailAndPassword(
-        email: "email@email.email",
-        password: "password",
-      )
-          .then((userCredential) {
-        final String uid = userCredential?.user?.uid;
-        if (uid != null) {
-          CollectionReference users = FirebaseFirestore.instance.collection('users');
-          users.doc().set({
-            'name': "Cutie Pie",
-            'age': "100",
-            'isStudent': true,
-          });
-        }
-      });
-    } on FirebaseException catch (e) {
-      print("Firebase Exception => $e");
+      CollectionReference users = await FirebaseFirestore.instance.collection("users");
+      final doc = await users?.doc(uid)?.get();
+      if (doc?.data() != null) {
+        return EmcUser.fromJson(doc.data());
+      }
+    } on FirebaseException catch (error) {
+      EasyLoading.showError(error.message);
     }
+    return null;
   }
 
-  static Future checkIsStudent(String uid) async {
+  static Future logout() async {
     try {
-      bool isStudent = false;
-      CollectionReference users = FirebaseFirestore.instance.collection('users');
-      await users.doc(uid).get().then((DocumentSnapshot snapshot) {
-        print("snapshot.data() :: ${snapshot.data()}");
-        isStudent = snapshot.data()["isStudent"];
-      });
-      return isStudent;
-      // print("No Return");
-    } on FirebaseException catch (e) {
-      print("Firebase Exception => $e");
-    }
-  }
-  
-  static Future logout() async{
-    try{
       await FirebaseAuth.instance.signOut();
-    } on FirebaseException catch(e){
-      print("Firebase Exception => $e");
+      return true;
+    } on FirebaseException catch (error) {
+      EasyLoading.showError(error.message);
     }
+    return false;
   }
 }
-    // try {
-    //   UserCredential userCredential =
-    //       await FirebaseAuth.instance.createUserWithEmailAndPassword(email: "barry.allen@example.com", password: "SuperSecretPassword!");
-    // } on FirebaseAuthException catch (e) {
-    //   if (e.code == 'weak-password') {
-    //     print('The password provided is too weak.');
-    //   } else if (e.code == 'email-already-in-use') {
-    //     print('The account already exists for that email.');
-    //   }
-    // } catch (e) {
-    //   print(e);
-    // }

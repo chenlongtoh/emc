@@ -13,12 +13,11 @@ class App extends StatelessWidget {
     return Consumer<AuthModel>(
       builder: (context, authModel, child) {
         // return StudentHome();
-        print("Consumer<AuthModel> rebuilt ${authModel}");
-        return authModel?.hasLogin ?? false
-            ? authModel?.isStudent ?? false
+        return authModel?.user == null
+            ? LoginScreen()
+            : authModel?.emcUser?.isStudent ?? false
                 ? StudentHome()
-                : LoginScreen()
-            : LoginScreen();
+                : LoginScreen();
       },
     );
   }
