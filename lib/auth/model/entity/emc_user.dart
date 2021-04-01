@@ -9,7 +9,6 @@ class EmcUser {
   // Counsellor fields
   String favouriteQuote;
   String officeNumber;
-  String profileDescription;
   String qualification;
 
   EmcUser({
@@ -21,7 +20,6 @@ class EmcUser {
     this.profilePicture,
     this.favouriteQuote,
     this.officeNumber,
-    this.profileDescription,
     this.qualification,
   });
 
@@ -34,7 +32,6 @@ class EmcUser {
     profilePicture = json['profilePicture'];
     favouriteQuote = json['favouriteQuote'];
     officeNumber = json['officeNumber'];
-    profileDescription = json['profileDescription'];
     qualification = json['qualification'];
   }
 
@@ -48,7 +45,6 @@ class EmcUser {
     data['profilePicture'] = this.profilePicture;
     data['favouriteQuote'] = this.favouriteQuote;
     data['officeNumber'] = this.officeNumber;
-    data['profileDescription'] = this.profileDescription;
     data['qualification'] = this.qualification;
     return data;
   }

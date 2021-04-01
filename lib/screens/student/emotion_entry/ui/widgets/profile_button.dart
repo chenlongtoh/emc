@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 
 class ProfileButton extends StatelessWidget {
   final Function onTap;
-  ProfileButton({this.onTap});
+  final bool darkStyle;
+  ProfileButton({this.onTap, this.darkStyle = false});
 
   @override
   Widget build(BuildContext context) {
@@ -12,11 +13,21 @@ class ProfileButton extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 5),
         child: Row(
           children: [
-            Text("Profile"),
+            Text(
+              "Profile",
+              style: darkStyle
+                  ? TextStyle(
+                      color: Colors.black,
+                    )
+                  : null,
+            ),
             SizedBox(
               width: 10,
             ),
-            Icon(Icons.arrow_forward)
+            Icon(
+              Icons.arrow_forward,
+              color: darkStyle ? Colors.black : IconTheme.of(context).color,
+            )
           ],
         ),
       ),

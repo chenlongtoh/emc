@@ -61,7 +61,7 @@ class _ConnectionPageState extends State<ConnectionPage> {
                   itemCount: connectionList.length,
                   itemBuilder: (context, index) {
                     final connection = connectionList[index];
-                    final bool connected = connection?.connected ?? false;
+                    final bool connected = connection?.status == "connected";
                     return LecturerItem(
                       imageUri: connection?.connectedCounsellor?.profilePicture,
                       name: connection?.connectedCounsellor?.name ?? "-",

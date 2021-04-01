@@ -16,6 +16,7 @@ class AuthService {
       );
       return userCredential?.user;
     } on FirebaseAuthException catch (e) {
+      log("Error @ login => $e");
       if (e.code == 'user-not-found') {
         EasyLoading.showError("No user found, please try again");
       } else if (e.code == 'wrong-password') {

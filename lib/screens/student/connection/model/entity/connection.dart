@@ -4,16 +4,16 @@ class Connection {
   String counsellorId;
   String date;
   String message;
-  bool connected;
+  String status;
   ConnectedCounsellor connectedCounsellor;
 
-  Connection({this.counsellorId, this.date, this.message, this.connected, this.connectedCounsellor});
+  Connection({this.counsellorId, this.date, this.message, this.status, this.connectedCounsellor});
 
   Connection.fromJson(Map<String, dynamic> json) {
     counsellorId = json['counsellorId'];
     date = json['date'];
     message = json['message'];
-    connected = json['connected'];
+    status = json['status'];
     connectedCounsellor = ConnectedCounsellor.fromJson(json['counsellor']);
   }
 
@@ -22,7 +22,7 @@ class Connection {
     data['counsellorId'] = this.counsellorId;
     data['date'] = this.date;
     data['message'] = this.message;
-    data['connected'] = this.connected;
+    data['status'] = this.status;
     data['counsellor'] = this.connectedCounsellor.toJson();
     return data;
   }

@@ -27,6 +27,7 @@ class AuthModel with ChangeNotifier {
           emcUser = await AuthService.getEmcUser(_user.uid);
           if (emcUser != null) {
             emcUser.uid = user?.uid;
+            EasyLoading.dismiss();
           }
         }
       });
@@ -42,6 +43,7 @@ class AuthModel with ChangeNotifier {
     if (success) {
       emcUser = null;
       log("emcUser = null");
+      EasyLoading.dismiss();
     }
     notifyListeners();
   }
