@@ -42,7 +42,7 @@ class AuthModel with ChangeNotifier {
     bool success = await AuthService.logout();
     if (success) {
       emcUser = null;
-      log("emcUser = null");
+      user = null;
       EasyLoading.dismiss();
     }
     notifyListeners();

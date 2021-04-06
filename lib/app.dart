@@ -17,7 +17,7 @@ class App extends StatelessWidget {
       builder: (context, authModel, child) {
         // return StudentHome();
         log("AuthModel => ${json.encode(authModel.emcUser)}");
-        return authModel?.user == null
+        return authModel?.emcUser == null
             ? LoginScreen()
             : authModel?.emcUser?.isStudent ?? false
                 ? StudentHome()

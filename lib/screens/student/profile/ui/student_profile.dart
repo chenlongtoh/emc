@@ -137,47 +137,35 @@ class StudentProfileState extends State<StudentProfile> {
                 Padding(
                   padding: const EdgeInsets.only(top: topPadding + avatarRadius),
                   child: Container(
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                    ),
-                    child: Column(
+                    color: Colors.white,
+                    padding: const EdgeInsets.symmetric(vertical: topPadding),
+                    child: ListView(
+                      physics: new BouncingScrollPhysics(),
                       children: [
-                        Expanded(
-                          child: ListView(
-                            children: [
-                              SizedBox(height: avatarRadius + topPadding),
-                              Center(
-                                child: Text(
-                                  student?.name ?? "-",
-                                  style: EmcTextStyle.listTitle,
-                                ),
-                              ),
-                              SizedBox(height: 10),
-                              _buildProfileDetails(student?.matric, student?.name, student?.email, student?.email),
-                            ],
+                        SizedBox(height: avatarRadius),
+                        _buildProfileDetails(student?.matric, student?.name, student?.email, student?.email),
+                        if (authModel?.isStudent) ...[
+                          Center(
+                            child: EmcButton(
+                              onPressed: () => print("Stuff"),
+                              text: "Update Profile",
+                            ),
                           ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(vertical: topPadding),
-                          child: Column(
-                            children: [
-                              EmcButton(
-                                onPressed: () => print("Stuff"),
-                                text: "Update Profile",
-                              ),
-                              EmcButton(
-                                onPressed: () => Navigator.pushNamed(context, ChangePasswordPage.routeName),
-                                text: "Change Password",
-                              ),
-                              EmcButton(
-                                onPressed: () async {
-                                  await authModel.logout().then((_) => Navigator.popUntil(context, (route) => route.isFirst));
-                                },
-                                text: "Logout",
-                              ),
-                            ],
+                          Center(
+                            child: EmcButton(
+                              onPressed: () => Navigator.pushNamed(context, ChangePasswordPage.routeName),
+                              text: "Change Password",
+                            ),
                           ),
-                        ),
+                          Center(
+                            child: EmcButton(
+                              onPressed: () async {
+                                await authModel.logout().then((_) => Navigator.popUntil(context, (route) => route.isFirst));
+                              },
+                              text: "Logout",
+                            ),
+                          ),
+                        ]
                       ],
                     ),
                   ),
@@ -186,15 +174,26 @@ class StudentProfileState extends State<StudentProfile> {
                   alignment: Alignment.topCenter,
                   child: Padding(
                     padding: const EdgeInsets.only(top: topPadding),
-                    child: CircleAvatar(
-                      radius: avatarRadius + 3,
-                      backgroundColor: Colors.white,
-                      child: CircleAvatar(
-                        radius: avatarRadius,
-                        backgroundImage: student?.profilePicture != null
-                            ? NetworkImage(student?.profilePicture)
-                            : AssetImage("assets/images/default_avatar.png"),
-                      ),
+                    child: Column(
+                      children: [
+                        CircleAvatar(
+                          radius: avatarRadius + 3,
+                          backgroundColor: Colors.white,
+                          child: CircleAvatar(
+                            radius: avatarRadius,
+                            backgroundImage: student?.profilePicture != null
+                                ? NetworkImage(student?.profilePicture)
+                                : AssetImage("assets/images/default_avatar.png"),
+                          ),
+                        ),
+                        Center(
+                          child: Text(
+                            student?.name ?? "-",
+                            maxLines: 3,
+                            style: EmcTextStyle.listTitle,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                 ),

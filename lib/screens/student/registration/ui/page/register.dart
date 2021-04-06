@@ -17,13 +17,14 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final GlobalKey<FormBuilderState> _accountFormKey = GlobalKey<FormBuilderState>();
   final GlobalKey<FormBuilderState> _profileFormKey = GlobalKey<FormBuilderState>();
   RegistrationModel registrationModel;
-  bool isInit = true;
+  bool isAccountFormInit = true;
+  bool isProfileFormInit = true;
   bool _accountFormAutovalidate = false;
   bool _profileFormAutovalidate = false;
   int _currentStep = 0;
 
   @override
-  void initState(){
+  void initState() {
     super.initState();
     registrationModel = new RegistrationModel();
   }
@@ -35,21 +36,23 @@ class _RegisterScreenState extends State<RegisterScreen> {
     }
     setState(() {
       if (_currentStep == 0) {
+        isAccountFormInit = false;
         if (_accountFormKey.currentState?.saveAndValidate() ?? false) {
           _currentStep = 1;
         } else {
           _accountFormAutovalidate = true;
         }
       } else if (_currentStep == 1) {
+        isProfileFormInit = false;
         if (_profileFormKey.currentState?.saveAndValidate() ?? false) {
           if (_accountFormKey.currentState?.saveAndValidate() ?? false) {
             print("_accountFormKey => ${_accountFormKey?.currentState?.value}");
             print("_profileFormKey => ${_profileFormKey?.currentState?.value}");
             registrationModel.register(
               email: FormUtil.getFormValue(_accountFormKey, AccountFormField.EMAIL),
-              password : FormUtil.getFormValue(_accountFormKey, AccountFormField.PASSWORD),
-              matric : FormUtil.getFormValue(_profileFormKey, ProfileFormField.MATRIC),
-              name : FormUtil.getFormValue(_profileFormKey, ProfileFormField.NAME),
+              password: FormUtil.getFormValue(_accountFormKey, AccountFormField.PASSWORD),
+              matric: FormUtil.getFormValue(_profileFormKey, ProfileFormField.MATRIC),
+              name: FormUtil.getFormValue(_profileFormKey, ProfileFormField.NAME),
               profilePicture: FormUtil.getFormValue(_profileFormKey, ProfileFormField.PROFILE_PICTURE),
             );
           } else {
@@ -59,12 +62,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
           _profileFormAutovalidate = true;
         }
       }
-      isInit = false;
     });
   }
 
-  StepState _getStepState(formKey) {
-    return isInit
+  StepState _getStepState(bool initFlag, formKey) {
+    return initFlag
         ? StepState.indexed
         : formKey?.currentState?.saveAndValidate() ?? false
             ? StepState.complete
@@ -112,7 +114,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
               isActive: true,
               title: Text("Step 1"),
               subtitle: Text("Create An Account"),
-              state: _getStepState(_accountFormKey),
+              state: _getStepState(isAccountFormInit, _accountFormKey),
             ),
             Step(
               content: ProfileForm(
@@ -123,7 +125,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
               isActive: true,
               title: Text("Step 2"),
               subtitle: Text("Create Your Profile"),
-              state: _getStepState(_profileFormKey),
+              state: _getStepState(isProfileFormInit, _profileFormKey),
             ),
           ],
         ),

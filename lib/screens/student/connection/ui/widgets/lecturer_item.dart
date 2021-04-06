@@ -39,7 +39,8 @@ class LecturerItem extends StatelessWidget {
                 flex: 2,
                 child: CircleAvatar(
                   radius: 30,
-                  backgroundImage: (imageUri != null && imageUri.isNotEmpty) ? NetworkImage(imageUri) : AssetImage("assets/images/default_avatar.png"),
+                  backgroundImage:
+                      (imageUri != null && imageUri.isNotEmpty) ? NetworkImage(imageUri) : AssetImage("assets/images/default_avatar.png"),
                 ),
               ),
               Expanded(
@@ -67,7 +68,10 @@ class LecturerItem extends StatelessWidget {
               if (trailingWidget != null)
                 Expanded(
                   flex: 3,
-                  child: trailingWidget,
+                  child: Align(
+                    alignment: Alignment.centerRight,
+                    child: trailingWidget,
+                  ),
                 )
             ],
           ),

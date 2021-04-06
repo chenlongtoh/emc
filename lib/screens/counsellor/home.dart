@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
-import 'counsellor_appointment/ui/page/counsellor_appointment_page.dart';
-import 'counsellor_connection/ui/page/counsellor_connection_page.dart';
-import 'counsellor_home/ui/page/counsellor_home.dart';
-import 'counsellor_schedule/ui/page/schedule_page.dart';
+import 'appointment/ui/page/appointment_page.dart';
+import 'connection/ui/page/connection_page.dart';
+import 'home/ui/page/counsellor_home.dart';
+import 'schedule/ui/page/schedule_page.dart';
 
 class CounsellorHome extends StatefulWidget {
   @override
@@ -11,13 +11,6 @@ class CounsellorHome extends StatefulWidget {
 }
 
 class _CounsellorHomeState extends State<CounsellorHome> {
-  static final _pageList = [
-    CounsellorHomePage(),
-    CounsellorConnectionPage(),
-    CounsellorAppointmentPage(),
-    SchedulePage(),
-  ];
-
   int _currentIndex = 0;
 
   void _onItemTapped(int index) {
@@ -29,7 +22,15 @@ class _CounsellorHomeState extends State<CounsellorHome> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: IndexedStack(children: _pageList, index: _currentIndex),
+      body: IndexedStack(children: [
+        CounsellorHomePage(
+          navigateToConnection: () => _onItemTapped(1),
+          navigateToAppointment: () => _onItemTapped(2),
+        ),
+        ConnectionPage(),
+        AppointmentPage(),
+        SchedulePage(),
+      ], index: _currentIndex),
       bottomNavigationBar: BottomNavigationBar(
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
