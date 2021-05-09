@@ -1,6 +1,3 @@
-import 'dart:convert';
-import 'dart:developer';
-
 import 'package:emc/auth/model/entity/emc_user.dart';
 import 'package:emc/auth/model/view_model/auth_model.dart';
 import 'package:emc/screens/student/connection/model/entity/connection.dart';
@@ -17,7 +14,6 @@ class ConnectionModel {
 
   Future<List<Connection>> fetchConnections() async {
     connectionList = await ConnectionService.fetchConnectionByUid(authModel?.user?.uid ?? "");
-    log("fetchConnections => ${json.encode(connectionList.first)}");
     return connectionList;
   }
 
@@ -30,8 +26,6 @@ class ConnectionModel {
   }
 
   Future connectToCounsellor(EmcUser counsellor) async {
-    log("auth model => ${json.encode(authModel?.emcUser)}");
-    log("authModel => ${json.encode(counsellor)}");
     EasyLoading.show();
     Map<String, dynamic> data = {
       "counsellor": {

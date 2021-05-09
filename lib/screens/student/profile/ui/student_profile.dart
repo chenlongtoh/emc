@@ -9,12 +9,11 @@ import 'package:emc/common_widget/emc_shimmer.dart';
 import 'package:emc/constant.dart';
 import 'package:emc/screens/student/change_password/ui/page/change_password_page.dart';
 import 'package:emc/screens/student/profile/model/student_profile_model.dart';
+import 'package:emc/screens/student/profile/ui/update_profile.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-const double avatarRadius = 60;
-const double topPadding = 10;
-const double contentHorizontalPadding = 60;
+import '../constant.dart';
 
 class StudentProfilePageArgs {
   final String studentId;
@@ -47,11 +46,11 @@ class StudentProfileState extends State<StudentProfile> {
     return authModel.emcUser;
   }
 
-  Widget _buildProfileDetails(String matric, String name, String email, String dob) {
+  Widget _buildProfileDetails(String matric, String name, String email) {
     return Container(
       padding: const EdgeInsets.symmetric(
         vertical: 10,
-        horizontal: contentHorizontalPadding,
+        horizontal: CONTENT_HORIZONTAL_PADDING,
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -92,29 +91,6 @@ class StudentProfileState extends State<StudentProfile> {
             ),
           ),
           SizedBox(height: 5),
-          Text(
-            "Date of Birth",
-            style: TextStyle(color: EmcColors.lightGrey),
-          ),
-          SizedBox(height: 3),
-          Text(
-            dob ?? "-",
-            style: TextStyle(
-              fontSize: 22,
-            ),
-          ),
-          SizedBox(height: 5),
-          Text(
-            "Name",
-            style: TextStyle(color: EmcColors.lightGrey),
-          ),
-          SizedBox(height: 3),
-          Text(
-            name ?? "-",
-            style: TextStyle(
-              fontSize: 22,
-            ),
-          ),
         ],
       ),
     );
@@ -135,19 +111,22 @@ class StudentProfileState extends State<StudentProfile> {
             return Stack(
               children: [
                 Padding(
-                  padding: const EdgeInsets.only(top: topPadding + avatarRadius),
+                  padding: const EdgeInsets.only(top: TOP_PADDING + AVATAR_RADIUS),
                   child: Container(
                     color: Colors.white,
-                    padding: const EdgeInsets.symmetric(vertical: topPadding),
+                    padding: const EdgeInsets.symmetric(vertical: TOP_PADDING),
                     child: ListView(
                       physics: new BouncingScrollPhysics(),
                       children: [
-                        SizedBox(height: avatarRadius),
-                        _buildProfileDetails(student?.matric, student?.name, student?.email, student?.email),
+                        SizedBox(height: AVATAR_RADIUS),
+                        _buildProfileDetails(student?.matric, student?.name, student?.email),
                         if (authModel?.isStudent) ...[
                           Center(
                             child: EmcButton(
-                              onPressed: () => print("Stuff"),
+                              onPressed: () => Navigator.pushNamed(
+                                context,
+                                UpdateProfilePage.routeName,
+                              ),
                               text: "Update Profile",
                             ),
                           ),
@@ -173,14 +152,14 @@ class StudentProfileState extends State<StudentProfile> {
                 Align(
                   alignment: Alignment.topCenter,
                   child: Padding(
-                    padding: const EdgeInsets.only(top: topPadding),
+                    padding: const EdgeInsets.only(top: TOP_PADDING),
                     child: Column(
                       children: [
                         CircleAvatar(
-                          radius: avatarRadius + 3,
+                          radius: AVATAR_RADIUS + 3,
                           backgroundColor: Colors.white,
                           child: CircleAvatar(
-                            radius: avatarRadius,
+                            radius: AVATAR_RADIUS,
                             backgroundImage: student?.profilePicture != null
                                 ? NetworkImage(student?.profilePicture)
                                 : AssetImage("assets/images/default_avatar.png"),

@@ -46,8 +46,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
         isProfileFormInit = false;
         if (_profileFormKey.currentState?.saveAndValidate() ?? false) {
           if (_accountFormKey.currentState?.saveAndValidate() ?? false) {
-            print("_accountFormKey => ${_accountFormKey?.currentState?.value}");
-            print("_profileFormKey => ${_profileFormKey?.currentState?.value}");
             registrationModel.register(
               email: FormUtil.getFormValue(_accountFormKey, AccountFormField.EMAIL),
               password: FormUtil.getFormValue(_accountFormKey, AccountFormField.PASSWORD),

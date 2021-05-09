@@ -13,7 +13,7 @@ import 'package:emc/common_widget/emc_scaffold.dart';
 import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
-import 'counsellor_list.dart';
+import 'counsellor_list_page.dart';
 
 class ConnectionPage extends StatefulWidget {
   @override
@@ -64,18 +64,22 @@ class _ConnectionPageState extends State<ConnectionPage> {
                       itemBuilder: (context, index) {
                         final connection = connectionList[index];
                         log("connection => ${json.encode(connection)}");
-                        final bool connected = connection?.status == "connected";
+                        final String connectionStatus = connection?.status;
                         return LecturerItem(
                           imageUri: connection?.connectedCounsellor?.profilePicture,
                           name: connection?.connectedCounsellor?.name ?? "-",
                           qualification: connection?.connectedCounsellor?.qualification ?? "-",
                           trailingWidget: Text(
-                            connected ? "Connected" : "Pending",
-                            style: connected
-                                ? TextStyle(
-                                    color: Colors.green,
-                                  )
-                                : null,
+                            connectionStatus == "connected"
+                                ? "Connected"
+                                : connectionStatus == "pending"
+                                    ? "Pending"
+                                    : "Declined",
+                            style: connectionStatus == "pending"
+                                ? null
+                                : TextStyle(
+                                    color: connectionStatus == "connected" ? Colors.green : Colors.red,
+                                  ),
                           ),
                           onTap: () => Navigator.pushNamed(
                             context,
@@ -101,7 +105,7 @@ class _ConnectionPageState extends State<ConnectionPage> {
               onPressed: () async {
                 var shouldReload = await Navigator.pushNamed(
                   context,
-                  CounsellorList.routeName,
+                  CounsellorListPage.routeName,
                   arguments: CounsellorListPageArgs(
                     connectionModel: _connectionModel,
                   ),

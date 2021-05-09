@@ -10,7 +10,6 @@ class EmotionEntryModel {
 
   Future save(String emotionString, String notes) async {
     EasyLoading.show();
-    log("AuthModel => ${authModel?.user?.uid}");
     String uid = authModel?.user?.uid ?? "-";
     EmotionEntry emotion = new EmotionEntry(
       emotion: emotionString ?? "N/A",
@@ -18,7 +17,6 @@ class EmotionEntryModel {
       timestamp: DateTime.now().millisecondsSinceEpoch,
       uid: uid,
     );
-    print("DateTime.now().millisecondsSinceEpoch.toString() ${DateTime.now().millisecondsSinceEpoch.toString()}");
     final success = await EmotionEntryService.saveEmotionEntry(emotion.toJson());
     if(success){
       EasyLoading.showSuccess("Emotion Saved Successfully");

@@ -1,12 +1,17 @@
 import 'package:emc/auth/index.dart';
 import 'package:emc/screens/counsellor/schedule/ui/page/schedule_page.dart';
+import 'package:emc/screens/student/appointment/ui/page/counsellor_list_page.dart' as AppointmentCounsellorList;
 import 'package:emc/screens/student/change_password/ui/page/change_password_page.dart';
-import 'package:emc/screens/student/connection/ui/page/counsellor_list.dart';
+import 'package:emc/screens/student/chatbot/ui/page/analysis_result_page.dart';
+import 'package:emc/screens/student/connection/ui/page/counsellor_list_page.dart' as ConnectionCounsellorList;
 import 'package:emc/screens/student/home.dart';
 import 'package:emc/screens/student/profile/ui/student_profile.dart';
+import 'package:emc/screens/student/profile/ui/update_profile.dart' as Student;
+import 'package:emc/screens/counsellor/profile/ui/page/update_profile.dart' as Counsellor;
 import 'package:emc/screens/student/registration/index.dart';
 import 'package:flutter/material.dart';
 import 'package:emc/screens/counsellor/profile/ui/page/counsellor_profile.dart';
+import 'package:provider/provider.dart';
 
 class EmcRouter {
   static final Function onGenerateRoute = (settings) {
@@ -19,9 +24,9 @@ class EmcRouter {
         return MaterialPageRoute(builder: (_) => LoginScreen());
       case ChangePasswordPage.routeName:
         return MaterialPageRoute(builder: (_) => ChangePasswordPage());
-      case CounsellorList.routeName:
-        final CounsellorListPageArgs args = settings.arguments;
-        return MaterialPageRoute(builder: (_) => CounsellorList(args: args));
+      case ConnectionCounsellorList.CounsellorListPage.routeName:
+        final ConnectionCounsellorList.CounsellorListPageArgs args = settings.arguments;
+        return MaterialPageRoute(builder: (_) => ConnectionCounsellorList.CounsellorListPage(args: args));
       case SchedulePage.routeName:
         final SchedulePageArgs args = settings.arguments;
         return MaterialPageRoute(builder: (_) => SchedulePage(args: args));
@@ -35,6 +40,21 @@ class EmcRouter {
             uid: args?.studentId,
           ),
         );
+      case AppointmentCounsellorList.CounsellorListPage.routeName:
+        final AppointmentCounsellorList.CounsellorListPageArgs args = settings.arguments;
+        return MaterialPageRoute(
+          builder: (_) => ChangeNotifierProvider.value(
+            value: args.appointmentModel,
+            child: AppointmentCounsellorList.CounsellorListPage(),
+          ),
+        );
+      case Student.UpdateProfilePage.routeName:
+        return MaterialPageRoute(builder: (_) => Student.UpdateProfilePage());
+      case Counsellor.UpdateProfilePage.routeName:
+        return MaterialPageRoute(builder: (_) => Counsellor.UpdateProfilePage());
+      case AnalysisResultPage.routeName:
+        final AnalysisResultPageArgs args = settings.arguments;
+        return MaterialPageRoute(builder: (_) => AnalysisResultPage(args: args));
       default:
         return MaterialPageRoute(builder: (_) => LoginScreen());
     }

@@ -12,7 +12,7 @@ class RegistrationService {
           .then((UserCredential credential) async {
         CollectionReference users = FirebaseFirestore.instance.collection('users');
 
-        if (data["profilePic"] != null) {
+        if (data["profilePicture"] != null) {
           await users.doc(credential?.user?.uid ?? "").set({
             "name": data["name"],
             "matric": data["matric"],
@@ -22,7 +22,7 @@ class RegistrationService {
             Reference storageReference = FirebaseStorage.instance
                 .ref()
                 .child("images/${credential?.user?.uid}/profile_pic/")
-                .child("${Path.basename(data["profilePic"]?.path)}");
+                .child("${Path.basename(data["profilePicture"]?.path)}");
             await storageReference.putFile(data["profilePicture"]).then((value) {
               print("StorageReference.putFile.then $value");
               storageReference.getDownloadURL().then((fileUrl) async {
@@ -34,7 +34,7 @@ class RegistrationService {
         } else {
           await users.doc(credential?.user?.uid ?? "").set({
             "name": data["name"],
-            "matric": data["matric"],
+            "matric": data["matric"], 
             "isStudent": true,
             "email": data["email"],
             "profilePicture": null,

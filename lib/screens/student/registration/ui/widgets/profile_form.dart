@@ -21,10 +21,48 @@ class ProfileForm extends StatefulWidget {
 
 class _ProfileFormState extends State<ProfileForm> {
   File _image;
-  Future getImage(dynamic state) async {
+
+  Future _onUploadImage(FormFieldState<dynamic> field) async {
+    return showModalBottomSheet<void>(
+      context: context,
+      builder: (context) {
+        return ListView(
+          shrinkWrap: true,
+          children: [
+            ListTile(
+              leading: Icon(Icons.camera_alt),
+              title: Text("Take a photo"),
+              onTap: () async {
+                final File image = await getImage(ImageSource.camera);
+                if(image != null){
+                  field.didChange(image);
+                  setState(() => _image = image);
+                }
+                Navigator.pop(context);
+              },
+            ),
+            ListTile(
+              leading: Icon(Icons.image),
+              title: Text("Pick from gallery"),
+              onTap: () async {
+                final File image = await getImage(ImageSource.gallery);
+                if(image != null){
+                  field.didChange(image);
+                  setState(() => _image = image);
+                }
+                Navigator.pop(context);
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Future getImage(ImageSource source) async {
     EasyLoading.show();
     File image;
-    await ImagePicker().getImage(source: ImageSource.camera).then((pickedFile) async {
+    await ImagePicker().getImage(source: source).then((pickedFile) async {
       await ImageCropper.cropImage(
         sourcePath: pickedFile?.path,
         maxHeight: 500,
@@ -34,18 +72,11 @@ class _ProfileFormState extends State<ProfileForm> {
           ratioY: 1,
         ),
       ).then((croppedImage) {
-        print("then called ${croppedImage?.path ?? 'trojan niggahorse'}");
         image = File(croppedImage?.path);
       });
-    }).catchError((error) => EasyLoading.showError("Error: $error"));
-
-    if (image != null) {
-      setState(() {
-        state.didChange(_image);
-        _image = image;
-      });
-    }
+    }).catchError((_) => EasyLoading.dismiss());
     EasyLoading.dismiss();
+    return image;
   }
 
   @override
@@ -57,15 +88,13 @@ class _ProfileFormState extends State<ProfileForm> {
         children: [
           FormBuilderField(
             name: ProfileFormField.PROFILE_PICTURE,
-            builder: (state) {
+            builder: (FormFieldState<dynamic> field) {
               return CircleAvatar(
                 radius: 60,
                 child: Stack(
                   children: [
                     GestureDetector(
-                      onTap: () async {
-                        await getImage(state);
-                      },
+                      onTap: () => _onUploadImage(field),
                       child: ClipOval(
                         child: _image == null ? Image.asset('assets/images/default_avatar.png') : Image.file(_image),
                       ),
@@ -77,9 +106,7 @@ class _ProfileFormState extends State<ProfileForm> {
                         style: ButtonStyle(
                           shape: MaterialStateProperty.all<CircleBorder>(CircleBorder()),
                         ),
-                        onPressed: () async {
-                          await getImage(state);
-                        },
+                        onPressed: () => _onUploadImage(field),
                         child: Icon(Icons.camera_alt),
                       ),
                     ),
@@ -113,7 +140,7 @@ class _ProfileFormState extends State<ProfileForm> {
             ),
           ),
           // FormBuilderDateTimePicker(
-            
+
           // ),
         ],
       ),

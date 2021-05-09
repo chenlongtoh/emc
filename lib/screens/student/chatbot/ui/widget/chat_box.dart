@@ -2,8 +2,9 @@ import 'package:emc/screens/student/chatbot/constant.dart';
 import 'package:flutter/material.dart';
 
 class ChatBox extends StatelessWidget {
-  final isBotMessage;
-  ChatBox({this.isBotMessage = false});
+  final String message;
+  final bool isBotMessage;
+  ChatBox({this.message, this.isBotMessage = false});
 
   @override
   Widget build(BuildContext context) {
@@ -19,7 +20,7 @@ class ChatBox extends StatelessWidget {
             borderRadius: BorderRadius.all(Radius.circular(12)),
           ),
           child: Text(
-            "Some textsSome textsSome textsSome textsSome textsSome textsSome textsSome textsSome texts",
+            message ?? "-",
             style: isBotMessage ? null : TextStyle(color: Colors.white),
           ),
         ),

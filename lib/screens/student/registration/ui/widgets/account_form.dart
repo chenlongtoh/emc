@@ -3,17 +3,24 @@ import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import '../../constant.dart';
 
-class AccountForm extends StatelessWidget {
+class AccountForm extends StatefulWidget {
   @required
   final GlobalKey<FormBuilderState> formKey;
   final bool shouldAutovalidate;
   AccountForm({this.formKey, this.shouldAutovalidate = false}) : assert(formKey != null);
 
   @override
+  _AccountFormState createState() => _AccountFormState();
+}
+
+class _AccountFormState extends State<AccountForm> {
+  String _password;
+
+  @override
   Widget build(BuildContext context) {
     return FormBuilder(
-      key: formKey,
-      autovalidateMode: shouldAutovalidate ? AutovalidateMode.always : AutovalidateMode.disabled,
+      key: widget.formKey,
+      autovalidateMode: widget.shouldAutovalidate ? AutovalidateMode.always : AutovalidateMode.disabled,
       child: Column(
         children: [
           SizedBox(height: 10),
@@ -36,6 +43,7 @@ class AccountForm extends StatelessWidget {
               FormBuilderValidators.required(context),
               FormBuilderValidators.minLength(context, 8),
             ]),
+            onChanged: (password) =>  setState(() => _password = password),
             decoration: InputDecoration(
               labelText: "Password",
               isDense: true,
@@ -50,7 +58,7 @@ class AccountForm extends StatelessWidget {
               FormBuilderValidators.required(context),
               FormBuilderValidators.minLength(context, 8),
               (value) {
-                if (value == FormUtil.getFormValue(formKey, AccountFormField.PASSWORD)) {
+                if (value == _password) {
                   return null;
                 }
                 return "Password mismatched, please try again";
