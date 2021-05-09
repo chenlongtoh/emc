@@ -11,10 +11,8 @@ import 'package:emc/screens/counsellor/profile/model/view_model.dart/profile_mod
 import 'package:emc/screens/counsellor/schedule/ui/page/schedule_page.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
-const double avatarRadius = 60;
-const double topPadding = 10;
-const double contentHorizontalPadding = 60;
+import 'package:emc/screens/counsellor/profile/ui/page/update_profile.dart';
+import '../../constant.dart';
 
 class CounsellorProfilePageArgs {
   final String counsellorId;
@@ -55,7 +53,7 @@ class _CounsellorProfileState extends State<CounsellorProfile> {
       child: Padding(
         padding: const EdgeInsets.symmetric(
           vertical: 20,
-          horizontal: contentHorizontalPadding,
+          horizontal: CONTENT_HORIZONTAL_PADDING,
         ),
         child: Text(
           quote ?? "-",
@@ -73,7 +71,7 @@ class _CounsellorProfileState extends State<CounsellorProfile> {
     return Container(
       padding: const EdgeInsets.symmetric(
         vertical: 10,
-        horizontal: contentHorizontalPadding,
+        horizontal: CONTENT_HORIZONTAL_PADDING,
       ),
       child: Column(
         children: [
@@ -159,14 +157,14 @@ class _CounsellorProfileState extends State<CounsellorProfile> {
             return Stack(
               children: [
                 Padding(
-                  padding: const EdgeInsets.only(top: topPadding + avatarRadius),
+                  padding: const EdgeInsets.only(top: TOP_PADDING + AVATAR_RADIUS),
                   child: Container(
                     color: Colors.white,
                     child: Stack(
                       children: [
                         ListView(
                           physics: BouncingScrollPhysics(),
-                          padding: const EdgeInsets.only(top: avatarRadius + topPadding, bottom: 110),
+                          padding: const EdgeInsets.only(top: AVATAR_RADIUS + TOP_PADDING, bottom: 110),
                           children: [
                             _buildQuote(counsellor?.favouriteQuote),
                             _buildProfileDetails(counsellor?.qualification, counsellor?.email, counsellor?.officeNumber),
@@ -179,14 +177,21 @@ class _CounsellorProfileState extends State<CounsellorProfile> {
                             child: Column(
                               mainAxisSize: MainAxisSize.min,
                               children: [
-                                EmcButton(
-                                  onPressed: () => Navigator.pushNamed(
-                                    context,
-                                    SchedulePage.routeName,
-                                    arguments: SchedulePageArgs(counsellorId: counsellor?.uid),
+                                if (authModel.isStudent)
+                                  EmcButton(
+                                    onPressed: () => Navigator.pushNamed(
+                                      context,
+                                      SchedulePage.routeName,
+                                      arguments: SchedulePageArgs(counsellorId: counsellor?.uid),
+                                    ),
+                                    text: "View Schedule",
                                   ),
-                                  text: "View Schedule",
-                                ),
+                                  // @@ IMPORTANT @@
+                                if (!authModel.isStudent)
+                                  EmcButton(
+                                    onPressed: () => Navigator.pushNamed(context, UpdateProfilePage.routeName),
+                                    text: "Update Profile",
+                                  ),
                                 if (!authModel.isStudent)
                                   EmcButton(
                                     onPressed: () async {
@@ -205,14 +210,14 @@ class _CounsellorProfileState extends State<CounsellorProfile> {
                 Align(
                   alignment: Alignment.topCenter,
                   child: Padding(
-                    padding: const EdgeInsets.only(top: topPadding),
+                    padding: const EdgeInsets.only(top: TOP_PADDING),
                     child: Column(
                       children: [
                         CircleAvatar(
-                          radius: avatarRadius + 3,
+                          radius: AVATAR_RADIUS + 3,
                           backgroundColor: Colors.white,
                           child: CircleAvatar(
-                            radius: avatarRadius,
+                            radius: AVATAR_RADIUS,
                             backgroundImage: counsellor?.profilePicture != null
                                 ? NetworkImage(counsellor?.profilePicture)
                                 : AssetImage("assets/images/default_avatar.png"),

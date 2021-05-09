@@ -174,7 +174,6 @@ class _ConnectionBodyState extends State<ConnectionBody> {
                                     itemCount: connectionRequestList.length,
                                     itemBuilder: (context, index) {
                                       final Connection connection = connectionRequestList[index];
-                                      log("json.encode(connection) => ${json.encode(connection)}");
                                       return ConnectionDetailsCard(
                                         connection: connection,
                                         onAccept: () async => _onAcceptConnection(connection?.connectionId),

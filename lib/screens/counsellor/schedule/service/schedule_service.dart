@@ -1,12 +1,12 @@
 import 'dart:developer';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:emc/auth/model/entity/emc_user.dart';
 import 'package:emc/screens/counsellor/schedule/model/entity/schedule.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 class ScheduleService {
   static Future fetchScheduleByDate(DateTime date, String counsellorId) async {
-    log("now is sumthing => ${date.toString()}");
     num currentDateTimestamp = new DateTime(date.year, date.month, date.day).millisecondsSinceEpoch;
     num nextDayDateTimestamp = new DateTime(date.year, date.month, date.day + 1).millisecondsSinceEpoch;
     try {
@@ -16,7 +16,6 @@ class ScheduleService {
           .where("date", isGreaterThanOrEqualTo: currentDateTimestamp)
           .where("date", isLessThanOrEqualTo: nextDayDateTimestamp)
           .get();
-      log("Snapshot => ${snapshot.docs.length > 0 ? snapshot.docs.first.data() : snapshot.docs.length} & $counsellorId  ${currentDateTimestamp.toString()} ${nextDayDateTimestamp.toString()}");
       if (snapshot.docs.length > 0) {
         return Schedule.fromJson({
           ...snapshot.docs.first.data(),
@@ -56,16 +55,43 @@ class ScheduleService {
     return success;
   }
 
-  static Future createSchedule(Map<String, dynamic> data) async {
+  static Future bookSlot(String scheduleId, Map<String, dynamic> data) async {
     bool success = false;
     try {
       CollectionReference schedule = FirebaseFirestore.instance.collection("schedule");
-      await schedule.doc().set(data);
+      await schedule.doc(scheduleId).update(data);
       success = true;
+    } catch (error) {
+      log("Error @ blockSlots => $error");
+      EasyLoading.showError("Error: $error");
+    }
+    return success;
+  }
+
+  static Future createSchedule(Map<String, dynamic> data) async {
+    try {
+      CollectionReference schedule = FirebaseFirestore.instance.collection("schedule");
+      DocumentReference doc = await schedule.add(data);
+      return doc.id;
     } catch (error) {
       log("Error @ createSchedule => $error");
       EasyLoading.showError("Error: $error");
     }
-    return success;
+    return null;
+  }
+
+   static Future getCounsellorById(String uid) async {
+    try {
+      CollectionReference users = FirebaseFirestore.instance.collection("users");
+      DocumentSnapshot snapshot = await users.doc(uid).get();
+      return EmcUser.fromJson({
+        ...snapshot.data(),
+        "uid": uid,
+      });
+    } catch (error) {
+      log("Error @ getCounsellorById => $error");
+      EasyLoading.showError("Error => $error");
+    }
+    return null;
   }
 }

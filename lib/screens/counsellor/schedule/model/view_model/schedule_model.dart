@@ -1,8 +1,12 @@
 import 'dart:developer';
 
+import 'package:emc/auth/model/entity/emc_user.dart';
 import 'package:emc/auth/model/view_model/auth_model.dart';
+import 'package:emc/screens/counsellor/schedule/constant.dart';
 import 'package:emc/screens/counsellor/schedule/model/entity/schedule.dart';
 import 'package:emc/screens/counsellor/schedule/service/schedule_service.dart';
+import 'package:emc/screens/student/appointment/model/entity/appointment.dart';
+import 'package:emc/screens/student/appointment/service/appointment_service.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 
@@ -61,12 +65,10 @@ class ScheduleModel with ChangeNotifier {
     );
     if (schedule == null) {
       schedule = new Schedule(
-        counsellorId: authModel?.user?.uid ?? "-",
+        counsellorId: (authModel?.isStudent ?? false) ? counsellorId : authModel.user?.uid,
         date: date.millisecondsSinceEpoch,
       );
     }
-    log("prolly has data => $schedule");
-    log("schedule => $schedule");
     setIdle();
   }
 
@@ -79,7 +81,11 @@ class ScheduleModel with ChangeNotifier {
     if (schedule?.docId == null) {
       Schedule _tmpSchedule = Schedule.copyFrom(schedule);
       _tmpSchedule.blockedSlot = tmpBlockedSlot;
-      success = await ScheduleService.createSchedule(_tmpSchedule.toJson());
+      final String scheduleId = await ScheduleService.createSchedule(_tmpSchedule.toJson());
+      if (scheduleId != null) {
+        success = true;
+        _tmpSchedule.docId = scheduleId;
+      }
     } else {
       success = await ScheduleService.blockSlots(schedule?.docId, tmpBlockedSlot, message);
     }
@@ -98,7 +104,8 @@ class ScheduleModel with ChangeNotifier {
     _slotHolder.forEach((key) {
       tmpBlockedSlot.remove(key);
     });
-    bool success = await ScheduleService.openSlots(schedule?.docId, tmpBlockedSlot);
+    bool success = false;
+    success = await ScheduleService.openSlots(schedule?.docId, tmpBlockedSlot);
     if (success) {
       schedule.blockedSlot = tmpBlockedSlot;
       this.clearSlots();
@@ -106,6 +113,101 @@ class ScheduleModel with ChangeNotifier {
       EasyLoading.showSuccess("Slots are now opened");
     }
     notifyListeners();
+  }
+
+  Future bookSlot(String slotIndex) async {
+    EasyLoading.show();
+    final String uid = authModel.user.uid;
+    final Map<String, dynamic> tmpBookedSlot = schedule?.bookedSlot ?? {};
+    tmpBookedSlot.addAll({
+      slotIndex: {
+        "sid": uid,
+        "status": "pending",
+      }
+    });
+
+    final Map<String, dynamic> tmpStudentList = schedule?.studentList ?? {};
+    if (!(tmpStudentList?.keys?.contains(uid) ?? false)) {
+      tmpStudentList.addAll({
+        uid: {
+          "name": authModel?.emcUser?.name,
+          "profilePicture": authModel?.emcUser?.profilePicture,
+          "exist": true,
+        }
+      });
+    }
+    bool success = false;
+    if (schedule?.docId == null) {
+      Schedule _tmpSchedule = Schedule.copyFrom(schedule);
+      _tmpSchedule.bookedSlot = tmpBookedSlot;
+      _tmpSchedule.studentList = tmpStudentList;
+      final String scheduleId = await ScheduleService.createSchedule(_tmpSchedule.toJson());
+      if (scheduleId != null) {
+        success = true;
+        _tmpSchedule.docId = scheduleId;
+      }
+    } else {
+      Map<String, dynamic> data = {
+        "bookedSlot": tmpBookedSlot,
+        "studentList": tmpStudentList,
+      };
+      success = await ScheduleService.bookSlot(schedule?.docId, data);
+    }
+    if (success) {
+      final Map<String, dynamic> studentData = {
+        "name": authModel?.emcUser?.name ?? "",
+        "profilePicture": authModel?.emcUser?.profilePicture ?? "",
+        "sid": authModel?.user?.uid,
+      };
+
+      final EmcUser counsellor = await ScheduleService.getCounsellorById(counsellorId);
+      final String hourStr = SCHEDULE_LABELS[int.parse(slotIndex)].split(":")[0];
+      int hour = int.parse(hourStr);
+      if (hour <= 5) hour += 12;
+      final DateTime scheduleDate = DateTime.fromMillisecondsSinceEpoch(schedule.date);
+      final DateTime startDate = DateTime(scheduleDate.year, scheduleDate.month, scheduleDate.day, hour);
+      final DateTime endDate = DateTime(scheduleDate.year, scheduleDate.month, scheduleDate.day, hour + 1);
+      final Map<String, dynamic> appointmentData = {
+        "counsellor": {
+          "cid": counsellorId,
+          "name": counsellor.name,
+          "profilePicture": counsellor.profilePicture,
+          "qualification": counsellor.qualification,
+        },
+        "startTime": startDate.millisecondsSinceEpoch,
+        "endTime": endDate.millisecondsSinceEpoch,
+        "status": "pending",
+        "student": studentData,
+      };
+      await AppointmentService.insertAppointment(appointmentData);
+      schedule.bookedSlot = tmpBookedSlot;
+      this.clearSlots();
+      this.editMode = ScheduleEditMode.none;
+      EasyLoading.showSuccess("Slots Booked Successfully");
+    }
+    notifyListeners();
+  }
+
+  bool get isTodayOrAfter {
+    final DateTime now = DateTime.now();
+    final DateTime scheduleDate = DateTime.fromMillisecondsSinceEpoch(schedule.date);
+    if(scheduleDate.year >= now.year){
+      if(scheduleDate.year == now.year && scheduleDate.month >= now.month){
+        return (scheduleDate.month == now.month && scheduleDate.day >= now.day);
+      }
+    }
+    return false;
+  }
+
+  bool get isAfterToday {
+    final DateTime now = DateTime.now();
+    final DateTime scheduleDate = DateTime.fromMillisecondsSinceEpoch(schedule.date);
+    if(scheduleDate.year >= now.year){
+      if(scheduleDate.year == now.year && scheduleDate.month >= now.month){
+        return (scheduleDate.month == now.month && scheduleDate.day > now.day);
+      }
+    }
+    return false;
   }
 
   setLoading() {

@@ -22,15 +22,18 @@ class _CounsellorHomeState extends State<CounsellorHome> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: IndexedStack(children: [
-        CounsellorHomePage(
-          navigateToConnection: () => _onItemTapped(1),
-          navigateToAppointment: () => _onItemTapped(2),
-        ),
-        ConnectionPage(),
-        AppointmentPage(),
-        SchedulePage(),
-      ], index: _currentIndex),
+      body: IndexedStack(
+        children: [
+          CounsellorHomePage(
+            navigateToConnection: () => _onItemTapped(1),
+            navigateToAppointment: () => _onItemTapped(2),
+          ),
+          ConnectionPage(),
+          AppointmentPage(),
+          SchedulePage(),
+        ],
+        index: _currentIndex,
+      ),
       bottomNavigationBar: BottomNavigationBar(
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
@@ -47,7 +50,7 @@ class _CounsellorHomeState extends State<CounsellorHome> {
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.today),
-            label: 'History',
+            label: 'Schedule',
           ),
         ],
         currentIndex: _currentIndex,

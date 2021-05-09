@@ -26,7 +26,7 @@ class Schedule {
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['docId'] = this.docId;
+    // data['docId'] = this.docId;
     data['blockedSlot'] = this.blockedSlot;
     data['bookedSlot'] = this.bookedSlot;
     data['counsellorId'] = this.counsellorId;

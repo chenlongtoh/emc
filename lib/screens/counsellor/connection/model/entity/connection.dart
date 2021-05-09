@@ -1,4 +1,3 @@
-
 import 'connected_student.dart';
 
 class Connection {
@@ -10,6 +9,8 @@ class Connection {
 
   Connection({this.connectionId, this.date, this.message, this.status, this.connectedStudent});
 
+  DateTime get getDate => date != null ? DateTime.fromMillisecondsSinceEpoch(date) : null;
+  
   Connection.fromJson(Map<String, dynamic> json) {
     connectionId = json['connectionId'];
     date = json['date'];

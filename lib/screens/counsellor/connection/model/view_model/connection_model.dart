@@ -15,9 +15,7 @@ class ConnectionModel {
   ConnectionModel({this.authModel});
 
   Future getConnections() async {
-    log("Something");
     allConnections = await ConnectionService.fetchAllConnections(authModel?.user?.uid);
-    log("allConnections => $allConnections");
     return allConnections;
   }
 
@@ -52,15 +50,15 @@ class ConnectionModel {
 
         try {
           final sendReport = await send(email, smtpServer);
-          print('Message sent: ' + sendReport.toString());
+          log('Message sent: ' + sendReport.toString());
         } on MailerException catch (e) {
-          print('Message not sent. $e');
+          log('Message not sent. $e');
           for (var p in e.problems) {
-            print('Problem: ${p.code}: ${p.msg}');
+            log('Problem: ${p.code}: ${p.msg}');
           }
         }
       }
-      EasyLoading.showSuccess("Connection Declined Successfully");
+      EasyLoading.showSuccess("Connection Declined, an email is sent to notify the student");
     } catch (error) {
       log("Error @declineConnection => $error");
       EasyLoading.showError("Error : $error");  

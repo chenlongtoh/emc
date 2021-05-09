@@ -14,7 +14,58 @@ import '../../constant.dart';
 import 'line.dart';
 
 class Schedule extends StatelessWidget {
+  final bool allowMakeAppointment;
+  Schedule({this.allowMakeAppointment = false});
+
   final GlobalKey<FormBuilderState> _fbKey = new GlobalKey<FormBuilderState>();
+
+  bool _timeAvailable(ScheduleModel model, String index) {
+    if(model.isAfterToday) return true;
+    try {
+      final int indexInt = int.parse(index);
+      final String timeStr = SCHEDULE_LABELS[indexInt].split(":")[0];
+      int timeStrInt = int.parse(timeStr);
+      if (timeStrInt <= 5) timeStrInt += 12;
+      DateTime now = DateTime.now();
+      return timeStrInt > now.hour;
+    } catch (error) {
+      log("Parsing Exception:: error => $error");
+    }
+    return false;
+  }
+
+  void _onBookSlot(BuildContext context, ScheduleModel model, String index) async {
+    return showDialog<void>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Slot Booking Confirmation'),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                Text('Book this slot with the cousellor?'),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: Text('Cancel'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child: Text('Confirm'),
+              onPressed: () async {
+                await model.bookSlot(index);
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
 
   void _onOpenBlockButtonPressed(BuildContext context, ScheduleModel model) async {
     if (model.slotCount > 0) {
@@ -92,15 +143,20 @@ class Schedule extends StatelessWidget {
     }
   }
 
-  Widget _getScheduleCard(ScheduleModel model, AuthModel authModel, String index) {
+  Widget _getScheduleCard(BuildContext context, ScheduleModel model, AuthModel authModel, String index) {
     if (model.schedule?.bookedSlot?.containsKey(index) ?? false) {
-      final String sid = model.schedule?.bookedSlot[index];
+      final Map bookingData = (model.schedule?.bookedSlot[index] ?? const {});
+      final String sid = bookingData["sid"];
+      final String status = bookingData["status"];
       final Map studentData = (model.schedule?.studentList ?? const {})[sid] ?? const {};
       return ScheduleCard(
         status: ScheduleStatus.booked,
         studentProfilePicture: studentData["profilePicture"],
         studentName: studentData["name"],
         disabled: model?.editMode != ScheduleEditMode.none,
+        shouldMaskDetails: authModel.isStudent,
+        bookedBySelf: sid == authModel?.user?.uid,
+        isPending: status == "pending",
       );
     } else if (model.schedule?.blockedSlot?.containsKey(index) ?? false) {
       return model?.editMode == ScheduleEditMode.openSlot
@@ -119,18 +175,29 @@ class Schedule extends StatelessWidget {
               disabled: model?.editMode == ScheduleEditMode.blockSlot,
             );
     }
-    // return EmptyScheduleCard();
-    return model?.editMode == ScheduleEditMode.blockSlot
-        ? GestureDetector(
-            onTap: () => (model?.slots?.contains(index) ?? false) ? model?.removeSlot(index) : model?.addSlot(index),
-            child: EmptyScheduleCard(
-              selected: model?.slots?.contains(index) ?? false,
-            ),
-          )
-        : SizedBox(
-            height: CARD_HEIGHT,
-            width: CARD_WIDTH,
-          );
+    if (authModel.isStudent && model.isTodayOrAfter && (allowMakeAppointment ?? false) && _timeAvailable(model, index)) {
+      return GestureDetector(
+        onTap: () => _onBookSlot(context, model, index),
+        child: EmptyScheduleCard(
+          text: "Tap to Make an Appointment",
+          onSelectColor: Colors.green[400],
+        ),
+      );
+    } else if (model?.editMode == ScheduleEditMode.blockSlot) {
+      return GestureDetector(
+        onTap: () => (model?.slots?.contains(index) ?? false) ? model?.removeSlot(index) : model?.addSlot(index),
+        child: EmptyScheduleCard(
+          selected: model?.slots?.contains(index) ?? false,
+          text: "Open Slot",
+          onSelectColor: Colors.red,
+        ),
+      );
+    } else {
+      return SizedBox(
+        height: CARD_HEIGHT,
+        width: CARD_WIDTH,
+      );
+    }
   }
 
   @override
@@ -169,14 +236,14 @@ class Schedule extends StatelessWidget {
                             ),
                           ),
                           SizedBox(width: 30),
-                          _getScheduleCard(model, authModel, index.toString()),
+                          _getScheduleCard(context, model, authModel, index.toString()),
                         ],
                       ),
                   ],
                 );
               },
             ),
-            if (!authModel.isStudent)
+            if (!authModel.isStudent && model.isTodayOrAfter)
               Align(
                 alignment: Alignment.bottomCenter,
                 child: model?.editMode == ScheduleEditMode.none

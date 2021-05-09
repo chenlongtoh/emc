@@ -15,8 +15,6 @@ class App extends StatelessWidget {
     print("App rebuilt");
     return Consumer<AuthModel>(
       builder: (context, authModel, child) {
-        // return StudentHome();
-        log("AuthModel => ${json.encode(authModel.emcUser)}");
         return authModel?.emcUser == null
             ? LoginScreen()
             : authModel?.emcUser?.isStudent ?? false

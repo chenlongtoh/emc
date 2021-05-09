@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import '../../../../../constant.dart';
 import '../../constant.dart';
 
@@ -6,7 +7,12 @@ enum CardType { appointment, connection }
 
 class AppointmentConnectionSummaryCard extends StatelessWidget {
   final CardType cardType;
-  AppointmentConnectionSummaryCard({this.cardType});
+  final DateTime startDate;
+  final DateTime endDate;
+  final String name;
+  final String profilePictureUrl;
+
+  AppointmentConnectionSummaryCard({this.cardType, this.startDate, this.name, this.profilePictureUrl, this.endDate});
 
   @override
   Widget build(BuildContext context) {
@@ -41,8 +47,12 @@ class AppointmentConnectionSummaryCard extends StatelessWidget {
                             mainAxisAlignment: MainAxisAlignment.center,
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
-                              Text("12"),
-                              Text("July"),
+                              Text(
+                                startDate != null ? startDate.day.toString() : "-",
+                              ),
+                              Text(
+                                startDate != null ? DateFormat.MMM().format(startDate) : "-",
+                              ),
                             ],
                           ),
                         ),
@@ -53,8 +63,15 @@ class AppointmentConnectionSummaryCard extends StatelessWidget {
                           mainAxisAlignment: MainAxisAlignment.center,
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text("Sunday"),
-                            Text("8am to 10am"),
+                            // Text("Sunday"),
+                            Text(
+                              startDate != null ? DateFormat.EEEE().format(startDate) : "-",
+                            ),
+                            Text(
+                              (startDate != null && endDate != null)
+                                  ? "${DateFormat("ha").format(startDate)} to ${DateFormat("ha").format(endDate)}"
+                                  : "-",
+                            ),
                           ],
                         ),
                       )
@@ -64,7 +81,9 @@ class AppointmentConnectionSummaryCard extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text("Conected Since"),
-                      Text("12/10/2018"),
+                      Text(
+                        startDate != null ? DateFormat("dd/MM/yyyy").format(startDate) : "-",
+                      ),
                     ],
                   ),
           ),
@@ -86,13 +105,14 @@ class AppointmentConnectionSummaryCard extends StatelessWidget {
                 flex: 3,
                 child: CircleAvatar(
                   radius: 30,
-                  backgroundImage: AssetImage("assets/images/default_avatar.png"),
+                  backgroundImage:
+                      (profilePictureUrl?.isEmpty ?? true) ? AssetImage("assets/images/default_avatar.png") : NetworkImage(profilePictureUrl),
                 ),
               ),
               Expanded(
                 flex: 7,
                 child: Center(
-                  child: Text("Karl Simpson"),
+                  child: Text(name ?? "-"),
                 ),
               )
             ],

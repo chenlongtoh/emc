@@ -15,18 +15,18 @@ class EmcTextStyle{
   );
 
   static final TextStyle listTitle = TextStyle(
-    fontSize: EmcFontSize.title15,
+    fontSize: EmcFontSize.title13,
     fontWeight: FontWeight.bold,
   );
 
   static final TextStyle quote = TextStyle(
-    fontSize: EmcFontSize.title15,
+    fontSize: EmcFontSize.title13,
     fontWeight: FontWeight.bold,
     
   );
 }
 
 class EmcFontSize {
-  static final double title15 = 15; 
+  static final double title13 = 13; 
   static final double subtitle10 = 10; 
 }

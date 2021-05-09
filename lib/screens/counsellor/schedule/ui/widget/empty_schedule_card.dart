@@ -7,12 +7,15 @@ const double STROKE_WIDTH = 2;
 
 class EmptyScheduleCard extends StatelessWidget {
   final bool selected;
-  EmptyScheduleCard({this.selected = false});
+  final String text;
+  final Color onSelectColor;
+
+  EmptyScheduleCard({this.selected = false, this.text, this.onSelectColor = Colors.red});
 
   @override
   Widget build(BuildContext context) {
     return DottedBorder(
-      color: selected ? Colors.red : Colors.white,
+      color: selected ? onSelectColor : Colors.white,
       dashPattern: [6],
       borderType: BorderType.RRect,
       radius: Radius.circular(15),
@@ -26,9 +29,9 @@ class EmptyScheduleCard extends StatelessWidget {
             alignment: Alignment.center,
             color: selected ? Colors.white : null,
             child: Text(
-              selected ? "Selected" : "Open",
+              selected ? "Selected" : text ?? "-",
               style: TextStyle(
-                color: selected ? Colors.red : Colors.white,
+                color: selected ? onSelectColor : Colors.white,
                 fontWeight: FontWeight.bold,
               ),
             ),

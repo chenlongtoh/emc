@@ -8,7 +8,8 @@ import 'package:table_calendar/table_calendar.dart';
 
 class SchedulePageArgs {
   final String counsellorId;
-  SchedulePageArgs({this.counsellorId});
+  final bool allowMakeAppointment;
+  SchedulePageArgs({this.counsellorId, this.allowMakeAppointment = false});
 }
 
 class SchedulePage extends StatefulWidget {
@@ -71,7 +72,7 @@ class _SchedulePageState extends State<SchedulePage> {
             child: ChangeNotifierProvider.value(
               value: _model,
               builder: (context, child) {
-                return Schedule();
+                return Schedule(allowMakeAppointment: widget.args?.allowMakeAppointment);
               },
             ),
           ),

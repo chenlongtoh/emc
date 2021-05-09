@@ -21,6 +21,8 @@ class AuthService {
         EasyLoading.showError("No user found, please try again");
       } else if (e.code == 'wrong-password') {
         EasyLoading.showError("Wrong password, please try again");
+      } else if (e.code == 'network-request-failed') {
+        EasyLoading.showError("There may be a problem with your network, please try again");
       } else {
         EasyLoading.showError(e.message);
       }

@@ -10,7 +10,6 @@ class ConnectionService {
     try {
       CollectionReference connection = FirebaseFirestore.instance.collection("connection");
       final QuerySnapshot snapshot = await connection.where("counsellor.cid", isEqualTo: cid).get();
-      log("Snapshot => $snapshot");
       return snapshot.docs.map((doc) => Connection.fromJson({
         ...doc.data(),
         "connectionId": doc.id,
@@ -24,7 +23,6 @@ class ConnectionService {
   }
 
   static Future confirmConnection(String connectionId) async {
-    log("connectionId => $connectionId");
     bool success = false;
     try {
       CollectionReference connection = FirebaseFirestore.instance.collection("connection");
@@ -33,13 +31,12 @@ class ConnectionService {
     } on FirebaseException catch (e) {
       EasyLoading.showError("Error => ${e.message}");
     } catch (e) {
-      log("General Error @ fetchAllConnections => $e");
+      log("General Error @ confirmConnection => $e");
     }
     return success;
   }
 
   static Future declineConnection(String connectionId) async {
-    log("connectionId => $connectionId");
     bool success = false;
     try {
       CollectionReference connection = FirebaseFirestore.instance.collection("connection");
@@ -48,7 +45,7 @@ class ConnectionService {
     } on FirebaseException catch (e) {
       EasyLoading.showError("Error => ${e.message}");
     } catch (e) {
-      log("General Error @ fetchAllConnections => $e");
+      log("General Error @ declineConnection => $e");
     }
     return success;
   }

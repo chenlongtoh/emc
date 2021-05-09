@@ -1,3 +1,4 @@
+import 'package:emc/screens/counsellor/appointment/model/entity/appointment.dart';
 import 'package:emc/screens/counsellor/connection/model/entity/connection.dart';
 import 'package:emc/screens/counsellor/home/constant.dart';
 import 'package:emc/screens/student/profile/ui/student_profile.dart';
@@ -5,15 +6,17 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 class AppointmentDetailsCard extends StatelessWidget {
-  final Connection connection;
+  final Appointment appointment;
   final Function onAccept;
   final Function onDecline;
-  AppointmentDetailsCard({this.connection, this.onAccept, this.onDecline});
+  AppointmentDetailsCard({this.appointment, this.onAccept, this.onDecline});
 
   Widget _buildDate() {
-    if (connection?.date == null) return Text("-");
-    final DateTime date = new DateTime.fromMillisecondsSinceEpoch(connection.date);
-    String datetimeStr = DateFormat("dd MMM yyyy hh:mm a").format(date);
+    if (appointment?.startTime == null) return Text("-");
+    final DateTime startDate = new DateTime.fromMillisecondsSinceEpoch(appointment.startTime);
+    final DateTime endDate = new DateTime.fromMillisecondsSinceEpoch(appointment.endTime);
+    final String datetimeStr = "${DateFormat("dd MMM yyyy ha").format(startDate)} - ${DateFormat("ha").format(endDate)}";
+    
     return Text(
       datetimeStr,
       style: TextStyle(color: Colors.white),
@@ -74,14 +77,14 @@ class AppointmentDetailsCard extends StatelessWidget {
                     children: [
                       CircleAvatar(
                         radius: 25,
-                        backgroundImage: connection?.connectedStudent?.profilePicture == null
+                        backgroundImage: appointment?.student?.profilePicture == null
                             ? AssetImage("assets/images/default_avatar.png")
-                            : NetworkImage(connection?.connectedStudent?.profilePicture),
+                            : NetworkImage(appointment?.student?.profilePicture),
                       ),
                       SizedBox(width: 10),
                       Expanded(
                         child: Text(
-                          connection?.connectedStudent?.name ?? "-",
+                          appointment?.student?.name ?? "-",
                           overflow: TextOverflow.ellipsis,
                         ),
                       ),
