@@ -1,4 +1,5 @@
 import 'package:emc/auth/index.dart';
+import 'package:emc/auth/ui/page/forgot_password_page.dart';
 import 'package:emc/screens/counsellor/schedule/ui/page/schedule_page.dart';
 import 'package:emc/screens/student/appointment/ui/page/counsellor_list_page.dart' as AppointmentCounsellorList;
 import 'package:emc/screens/student/change_password/ui/page/change_password_page.dart';
@@ -22,6 +23,8 @@ class EmcRouter {
         return MaterialPageRoute(builder: (_) => RegisterScreen());
       case LoginScreen.routeName:
         return MaterialPageRoute(builder: (_) => LoginScreen());
+      case ForgotPasswordPage.routeName:
+        return MaterialPageRoute(builder: (_) => ForgotPasswordPage());
       case ChangePasswordPage.routeName:
         return MaterialPageRoute(builder: (_) => ChangePasswordPage());
       case ConnectionCounsellorList.CounsellorListPage.routeName:

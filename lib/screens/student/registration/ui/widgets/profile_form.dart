@@ -130,6 +130,7 @@ class _ProfileFormState extends State<ProfileForm> {
           SizedBox(height: 8),
           FormBuilderTextField(
             name: ProfileFormField.MATRIC,
+            textCapitalization: TextCapitalization.characters,
             validator: FormBuilderValidators.compose([
               FormBuilderValidators.required(context),
             ]),

@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:emc/auth/model/view_model/auth_model.dart';
 import 'package:emc/common_widget/emc_button.dart';
 import 'package:emc/common_widget/emc_scaffold.dart';
@@ -18,6 +20,7 @@ class ChangePasswordPage extends StatefulWidget {
 class _ChangePasswordPageState extends State<ChangePasswordPage> {
   final GlobalKey<FormBuilderState> _fbKey = new GlobalKey<FormBuilderState>();
   bool _shouldAutovalidate = false;
+  String _newPasword;
 
   void _onSubmit() async {
     EasyLoading.show();
@@ -35,14 +38,16 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
           if (success) {
             AuthModel authModel = Provider.of<AuthModel>(context, listen: false);
             await authModel.logout().then((_) {
-              Navigator.pop(context, (route) => route.isFirst);
               EasyLoading.showSuccess("Your password is changed successfully, please login again");
+              Navigator.popUntil(context, (route) => route.isFirst);
             });
             return;
           }
         },
       );
+    } else {
       setState(() => _shouldAutovalidate = true);
+      EasyLoading.dismiss();
     }
   }
 
@@ -54,7 +59,7 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
       ),
       body: FormBuilder(
         key: _fbKey,
-        autovalidateMode: _shouldAutovalidate ? AutovalidateMode.onUserInteraction : AutovalidateMode.disabled,
+        autovalidateMode: _shouldAutovalidate ? AutovalidateMode.always : AutovalidateMode.disabled,
         child: ListView(
           padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 30),
           children: [
@@ -94,6 +99,7 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
                 fillColor: Colors.white,
                 filled: true,
               ),
+              onChanged: (text) => setState(() => _newPasword = text),
               obscureText: true,
             ),
             SizedBox(height: 10),
@@ -103,7 +109,10 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
                 FormBuilderValidators.required(context),
                 FormBuilderValidators.minLength(context, 8),
                 (value) {
-                  if (value == FormUtil.getFormValue(_fbKey, ChangePasswordFormField.CONFIRM_PASSWORD)) {
+                  // log("Value -> $value");
+                  // log("Other V -> ${FormUtil.getFormValue(_fbKey, ChangePasswordFormField.NEW_PASSWORD)}");
+                  // _fbKey.currentState.
+                  if (value == _newPasword) {
                     return null;
                   }
                   return "Password mismatched, please try again";

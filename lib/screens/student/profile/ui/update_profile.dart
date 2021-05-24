@@ -1,9 +1,9 @@
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:emc/auth/model/view_model/auth_model.dart';
 import 'package:emc/common_widget/emc_button.dart';
 import 'package:emc/common_widget/emc_scaffold.dart';
-import 'package:emc/screens/student/profile/model/student_profile_model.dart';
 import 'package:emc/screens/student/profile/service/student_profile_service.dart';
 import 'package:emc/util/form_util.dart';
 import 'package:flutter/material.dart';
@@ -13,7 +13,6 @@ import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 
-import '../../../../constant.dart';
 import '../constant.dart';
 
 class UpdateProfilePage extends StatefulWidget {
@@ -87,7 +86,10 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
       ).then((croppedImage) {
         image = File(croppedImage?.path);
       });
-    }).catchError((_) => EasyLoading.dismiss());
+    }).catchError((_) {
+      log("_ => $_");
+      EasyLoading.dismiss();
+    });
     EasyLoading.dismiss();
     return image;
   }
@@ -97,8 +99,8 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
       EasyLoading.show();
       bool success = await StudentProfileService.updateProfile(
         authModel,
-        FormUtil.getFormValue(_fbKey, ProfileUpdateForm.NAME),
-        FormUtil.getFormValue(_fbKey, ProfileUpdateForm.MATRIC_NO),
+        FormUtil.getFormValue(_fbKey, ProfileUpdateForm.NAME).toString().trim(),
+        FormUtil.getFormValue(_fbKey, ProfileUpdateForm.MATRIC_NO).toString().trim(),
         FormUtil.getFormValue(_fbKey, ProfileUpdateForm.PROFILE_PICTURE),
       );
       if (success) {
@@ -117,6 +119,10 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
       maskBackground: false,
       body: FormBuilder(
         key: _fbKey,
+        initialValue: {
+          ProfileUpdateForm.NAME: authModel?.emcUser?.name,
+          ProfileUpdateForm.MATRIC_NO: authModel?.emcUser?.matric,
+        },
         child: Stack(
           children: [
             Padding(
