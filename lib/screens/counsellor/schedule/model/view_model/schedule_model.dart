@@ -85,6 +85,7 @@ class ScheduleModel with ChangeNotifier {
       if (scheduleId != null) {
         success = true;
         _tmpSchedule.docId = scheduleId;
+        schedule = _tmpSchedule;
       }
     } else {
       success = await ScheduleService.blockSlots(schedule?.docId, tmpBlockedSlot, message);
@@ -191,22 +192,17 @@ class ScheduleModel with ChangeNotifier {
   bool get isTodayOrAfter {
     final DateTime now = DateTime.now();
     final DateTime scheduleDate = DateTime.fromMillisecondsSinceEpoch(schedule.date);
-    if(scheduleDate.year >= now.year){
-      if(scheduleDate.year == now.year && scheduleDate.month >= now.month){
-        return (scheduleDate.month == now.month && scheduleDate.day >= now.day);
-      }
-    }
-    return false;
+    return (scheduleDate.day == now.day || this.isAfterToday);
   }
 
   bool get isAfterToday {
     final DateTime now = DateTime.now();
     final DateTime scheduleDate = DateTime.fromMillisecondsSinceEpoch(schedule.date);
-    if(scheduleDate.year >= now.year){
-      if(scheduleDate.year == now.year && scheduleDate.month >= now.month){
-        return (scheduleDate.month == now.month && scheduleDate.day > now.day);
-      }
-    }
+    if (scheduleDate.year < now.year) return false;
+    if (scheduleDate.year > now.year) return true;
+    if (scheduleDate.month > now.month) return true;
+    if (scheduleDate.month < now.month) return false;
+    if (scheduleDate.day > now.day) return true;
     return false;
   }
 

@@ -56,8 +56,8 @@ class _ConnectionBodyState extends State<ConnectionBody> {
     _connection = model.getConnections();
   }
 
-  Future<void> _onAcceptConnection(String connectionId) async {
-    if (connectionId == null || connectionId.isEmpty) return;
+  Future<void> _onAcceptConnection(Connection connection) async {
+    if (connection?.connectionId?.isEmpty ?? true) return;
     return showDialog<void>(
       context: context,
       builder: (BuildContext context) {
@@ -80,7 +80,7 @@ class _ConnectionBodyState extends State<ConnectionBody> {
             TextButton(
               child: Text('Confirm'),
               onPressed: () async {
-                await model.confirmConection(connectionId);
+                await model.confirmConection(connection.connectionId);
                 _connection = model.getConnections();
                 setState(() {});
                 Navigator.of(context).pop();
@@ -92,8 +92,8 @@ class _ConnectionBodyState extends State<ConnectionBody> {
     );
   }
 
-  void _onDeclineConnection(String connectionId) async {
-    if (connectionId == null || connectionId.isEmpty) return;
+  void _onDeclineConnection(Connection connection) async {
+    if (connection?.connectionId?.isEmpty ?? true ) return;
     return showDialog<void>(
       context: context,
       builder: (BuildContext context) {
@@ -120,7 +120,7 @@ class _ConnectionBodyState extends State<ConnectionBody> {
               onPressed: () async {
                 _fbKey.currentState.saveAndValidate();
                 final String message = FormUtil.getFormValue(_fbKey, "declineMessage");
-                await model.declineConnection(connectionId, message);
+                await model.declineConnection(connection.connectionId, message, connection.connectedStudent?.sid);
                 _connection = model.getConnections();
                 setState(() {});
                 Navigator.pop(context);
@@ -151,7 +151,7 @@ class _ConnectionBodyState extends State<ConnectionBody> {
                   mainAxisSize: MainAxisSize.max,
                   children: [
                     Expanded(
-                      flex: 1,
+                      flex: 3,
                       child: Column(
                         children: [
                           Padding(
@@ -176,8 +176,8 @@ class _ConnectionBodyState extends State<ConnectionBody> {
                                       final Connection connection = connectionRequestList[index];
                                       return ConnectionDetailsCard(
                                         connection: connection,
-                                        onAccept: () async => _onAcceptConnection(connection?.connectionId),
-                                        onDecline: () async => _onDeclineConnection(connection?.connectionId),
+                                        onAccept: () async => _onAcceptConnection(connection),
+                                        onDecline: () async => _onDeclineConnection(connection),
                                       );
                                     },
                                   ),
@@ -186,11 +186,11 @@ class _ConnectionBodyState extends State<ConnectionBody> {
                       ),
                     ),
                     Expanded(
-                      flex: 1,
+                      flex: 5,
                       child: Column(
                         children: [
                           Padding(
-                            padding: const EdgeInsets.only(left: 20),
+                            padding: const EdgeInsets.only(left: 20, bottom: 15),
                             child: Text(
                               "Connected Student(s)",
                               style: TextStyle(
@@ -204,7 +204,7 @@ class _ConnectionBodyState extends State<ConnectionBody> {
                                     child: Text("No Connected Students Found"),
                                   )
                                 : ListView.separated(
-                                    padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 20),
+                                    padding: const EdgeInsets.only(top: 15, left: 20, right:20),
                                     physics: BouncingScrollPhysics(),
                                     separatorBuilder: (_, __) => SizedBox(height: 10),
                                     itemCount: connectedConnectionList.length,

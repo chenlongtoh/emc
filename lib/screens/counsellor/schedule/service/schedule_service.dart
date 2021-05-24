@@ -22,6 +22,9 @@ class ScheduleService {
           "docId": snapshot.docs.first.id,
         });
       }
+    } on FirebaseException catch (error) {
+      log("Error @ fetchScheduleByDate => ${error.message}");
+      EasyLoading.showError("Error: ${error.message}");
     } catch (error) {
       log("Error @ fetchScheduleByDate => $error");
       EasyLoading.showError("Error: $error");
@@ -35,6 +38,9 @@ class ScheduleService {
       CollectionReference schedule = FirebaseFirestore.instance.collection("schedule");
       await schedule.doc(scheduleId).update({"blockedSlot": blockedSlot});
       success = true;
+    } on FirebaseException catch (error) {
+      log("Error @ blockSlots => ${error.message}");
+      EasyLoading.showError("Error: ${error.message}");
     } catch (error) {
       log("Error @ blockSlots => $error");
       EasyLoading.showError("Error: $error");
@@ -45,11 +51,15 @@ class ScheduleService {
   static Future openSlots(String scheduleId, Map<String, dynamic> blockedSlot) async {
     bool success = false;
     try {
+      log("scheduleId => $scheduleId");
       CollectionReference schedule = FirebaseFirestore.instance.collection("schedule");
       await schedule.doc(scheduleId).update({"blockedSlot": blockedSlot});
       success = true;
+    } on FirebaseException catch (error) {
+      log("Error @ openSlots => ${error.message}");
+      EasyLoading.showError("Error: ${error.message}");
     } catch (error) {
-      log("Error @ blockSlots => $error");
+      log("Error @ openSlots => $error");
       EasyLoading.showError("Error: $error");
     }
     return success;
@@ -61,8 +71,11 @@ class ScheduleService {
       CollectionReference schedule = FirebaseFirestore.instance.collection("schedule");
       await schedule.doc(scheduleId).update(data);
       success = true;
+    } on FirebaseException catch (error) {
+      log("Error @ bookSlot => ${error.message}");
+      EasyLoading.showError("Error: ${error.message}");
     } catch (error) {
-      log("Error @ blockSlots => $error");
+      log("Error @ bookSlot => $error");
       EasyLoading.showError("Error: $error");
     }
     return success;
@@ -73,6 +86,9 @@ class ScheduleService {
       CollectionReference schedule = FirebaseFirestore.instance.collection("schedule");
       DocumentReference doc = await schedule.add(data);
       return doc.id;
+    } on FirebaseException catch (error) {
+      log("Error @ createSchedule => ${error.message}");
+      EasyLoading.showError("Error: ${error.message}");
     } catch (error) {
       log("Error @ createSchedule => $error");
       EasyLoading.showError("Error: $error");
@@ -88,6 +104,9 @@ class ScheduleService {
         ...snapshot.data(),
         "uid": uid,
       });
+    } on FirebaseException catch (error) {
+      log("Error @ getCounsellorById => ${error.message}");
+      EasyLoading.showError("Error: ${error.message}");
     } catch (error) {
       log("Error @ getCounsellorById => $error");
       EasyLoading.showError("Error => $error");
