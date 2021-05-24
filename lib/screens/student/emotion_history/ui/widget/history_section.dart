@@ -6,19 +6,40 @@ import 'package:emc/screens/student/emotion_entry/model/entity/emotion_entry.dar
 import 'package:emc/screens/student/emotion_history/model/view_model/emotion_history_model.dart';
 import 'package:emc/screens/student/emotion_history/ui/widget/history_card.dart';
 import 'package:flutter/material.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 const contentPadding = const EdgeInsets.symmetric(
   horizontal: 15,
   vertical: 15,
 );
 
-class HistorySection extends StatelessWidget {
+class HistorySection extends StatefulWidget {
   final EmotionHistoryModel model;
   HistorySection({this.model});
 
+  @override
+  _HistorySectionState createState() => _HistorySectionState();
+}
+
+class _HistorySectionState extends State<HistorySection> with AutomaticKeepAliveClientMixin {
+  RefreshController _refreshController;
+  Future _dataList;
+  void _onRefresh() async {
+    _dataList = _getDataListWithDelay();
+    setState(() {});
+    _refreshController.refreshCompleted();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _refreshController = new RefreshController(initialRefresh: false);
+    _dataList = _getDataListWithDelay();
+  }
+
   Future _getDataListWithDelay() async {
     final futures = await Future.wait([
-      model.dataList,
+      widget.model.dataList,
       Future.delayed(Duration(milliseconds: 300)),
     ]);
     return futures[0];
@@ -35,6 +56,7 @@ class HistorySection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return Container(
       width: double.infinity,
       child: Column(
@@ -47,37 +69,46 @@ class HistorySection extends StatelessWidget {
             ),
           ),
           Expanded(
-            child: FutureBuilder(
-              future: _getDataListWithDelay(),
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.done) {
-                  if (snapshot.data != null && (snapshot.data is List && snapshot.data.isNotEmpty)) {
-                    List<EmotionEntry> emotionEntryList = snapshot.data;
-                    return ListView.separated(
-                      padding: contentPadding,
-                      shrinkWrap: true,
-                      itemCount: emotionEntryList.length,
-                      separatorBuilder: (context, index) => SizedBox(height: 10),
-                      itemBuilder: (context, index) {
-                        final emotionEntry = emotionEntryList[index];
-                        return HistoryCard(
-                          timeString: _getTimeString(emotionEntry?.timestamp),
-                          emotion: _getEmotionFromString(emotionEntry.emotion),
-                          notes: emotionEntry?.notes,
-                        );
-                      },
+            child: SmartRefresher(
+              controller: _refreshController,
+              onRefresh: _onRefresh,
+              enablePullDown: true,
+              child: FutureBuilder(
+                future: _dataList,
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.done) {
+                    if (snapshot.data != null && (snapshot.data is List && snapshot.data.isNotEmpty)) {
+                      List<EmotionEntry> emotionEntryList = snapshot.data;
+                      return ListView.separated(
+                        physics: new BouncingScrollPhysics(),
+                        padding: contentPadding,
+                        shrinkWrap: true,
+                        itemCount: emotionEntryList.length,
+                        separatorBuilder: (context, index) => SizedBox(height: 10),
+                        itemBuilder: (context, index) {
+                          final emotionEntry = emotionEntryList[index];
+                          return HistoryCard(
+                            timeString: _getTimeString(emotionEntry?.timestamp),
+                            emotion: _getEmotionFromString(emotionEntry.emotion),
+                            notes: emotionEntry?.notes,
+                          );
+                        },
+                      );
+                    }
+                    return Center(
+                      child: Text("No Emotion Recorded on the Selected Day"),
                     );
                   }
-                  return Center(
-                    child: Text("No Emotion Recorded on the Selected Day"),
-                  );
-                }
-                return EmcShimmerList();
-              },
+                  return EmcShimmerList();
+                },
+              ),
             ),
           ),
         ],
       ),
     );
   }
+
+  @override
+  bool get wantKeepAlive => true;
 }

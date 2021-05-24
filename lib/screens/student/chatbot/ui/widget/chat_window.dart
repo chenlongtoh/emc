@@ -26,10 +26,7 @@ class ChatWindow extends StatelessWidget {
                 separatorBuilder: (_, __) => SizedBox(height: 4),
                 itemBuilder: (context, index) {
                   final Chat chat = chatList[index];
-                  return ChatBox(
-                    isBotMessage: chat.chatType == ChatType.bot,
-                    message: chat.text,
-                  );
+                  return ChatBox(chat: chat);
                 },
               ),
             ),

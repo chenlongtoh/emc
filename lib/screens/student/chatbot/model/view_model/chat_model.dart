@@ -21,11 +21,13 @@ class ChatModel with ChangeNotifier {
   DialogFlowtter dialogFlowtter;
   SentimentAnalyzer sentimentAnalysisModel = new SentimentAnalyzer();
   Quote randomQuote;
+  bool isChatLoading = false;
 
   init() async {
     setLoading();
     await sentimentAnalysisModel.init();
     dialogFlowtter = await DialogFlowtter.fromFile(path: "assets/services.json");
+    _displayBotLoadingChat();
     await getWelcome();
     setIdle();
   }
@@ -44,7 +46,17 @@ class ChatModel with ChangeNotifier {
     log("Response => ${response?.queryResult?.intent?.isFallback ?? '-'}");
   }
 
+  _displayBotLoadingChat(){
+    isChatLoading = true;
+    chatList.add(new Chat(chatType: ChatType.botLoading));
+    notifyListeners();
+  }
+
   void _addToChat(String text, ChatType type) {
+    if(type == ChatType.bot && isChatLoading){
+      isChatLoading = false;
+      chatList.removeLast();
+    }
     if (text != null) {
       chatList.add(new Chat(chatType: type, text: text));
     }
@@ -52,7 +64,9 @@ class ChatModel with ChangeNotifier {
   }
 
   inputText(String input) async {
+    analysisResult = null;
     _addToChat(input, ChatType.user);
+    _displayBotLoadingChat();
     DetectIntentResponse response = await dialogFlowtter.detectIntent(
       queryInput: QueryInput(
         text: TextInput(
@@ -66,8 +80,9 @@ class ChatModel with ChangeNotifier {
     // log("output?.isNotEmpty ?? false => ${output?.isNotEmpty}");
     if (output?.isNotEmpty ?? false) {
       final double highestPrediction = output.reduce(Math.max);
-      // log("highestPrediction => $highestPrediction");
-      if (highestPrediction > 0.75) {
+      log("output => $output"); 
+      log("response?.queryResult?.intent?.displayName => ${response?.queryResult?.intent?.displayName}");
+      if (highestPrediction > 0.5) {
         final Emotion dialogFlowEmotion = EMOTION_STRING_MAP.keys.firstWhere(
           (key) => EMOTION_STRING_MAP[key] == response?.queryResult?.intent?.displayName,
           orElse: () => null,
@@ -75,8 +90,8 @@ class ChatModel with ChangeNotifier {
         // log("response?.queryResult?.intent?.displayName => ${response?.queryResult?.intent?.displayName}");
         final Emotion emotionDetected =
             TENSOR_EMOTION_CLASS_INDEX_MAP.keys.firstWhere((key) => TENSOR_EMOTION_CLASS_INDEX_MAP[key] == output.indexOf(highestPrediction));
-        // log("dialogFlowEmotion => $dialogFlowEmotion");
-        // log("emotionDetected => $emotionDetected");
+        log("dialogFlowEmotion => $dialogFlowEmotion");
+        log("emotionDetected => $emotionDetected");
 
         if (dialogFlowEmotion == emotionDetected) {
           log("Came here => camehere");

@@ -4,6 +4,8 @@ import 'package:emc/auth/model/view_model/auth_model.dart';
 import 'package:emc/common_widget/emc_scaffold.dart';
 import 'package:emc/screens/student/chatbot/model/entity/analysis_result.dart';
 import 'package:emc/screens/student/chatbot/ui/widget/emotion_analysis_result_card.dart';
+import 'package:emc/screens/student/connection/model/view_model/connection_model.dart';
+import 'package:emc/screens/student/connection/ui/page/counsellor_list_page.dart';
 import 'package:emc/screens/student/emotion_entry/constant.dart';
 import 'package:emc/screens/student/emotion_entry/model/view_model/emotion_entry_model.dart';
 import 'package:flutter/material.dart';
@@ -11,7 +13,6 @@ import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:provider/provider.dart';
 
 class AnalysisResultPageArgs {
-
   final AnalysisResult analysisResult;
   AnalysisResultPageArgs({this.analysisResult});
 }
@@ -34,18 +35,51 @@ class _AnalysisResultPageState extends State<AnalysisResultPage> {
   @override
   void initState() {
     super.initState();
-    final authModel = Provider.of<AuthModel>(context, listen: false);
+    authModel = Provider.of<AuthModel>(context, listen: false);
+    log("authModel @ init => $authModel");
     _model = new EmotionEntryModel(authModel: authModel);
   }
 
   Widget _getQuote() {
-    return Text(
-      "\" LONG ONG TEXt\"",
-      style: TextStyle(fontStyle: FontStyle.italic, color: Colors.white),
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 30),
+      child: Column(
+        children: [
+          Text(
+            widget.args?.analysisResult?.randomQuote?.quote ?? "N/A",
+            style: TextStyle(fontStyle: FontStyle.italic, color: Colors.white),
+            textAlign: TextAlign.center,
+          ),
+          SizedBox(height: 10),
+          Text(
+            "- ${widget.args?.analysisResult?.randomQuote?.author ?? 'N/A'}",
+            style: TextStyle(fontStyle: FontStyle.italic, color: Colors.white),
+            textAlign: TextAlign.center,
+          ),
+          SizedBox(height: 10),
+          Text(
+            widget.args?.analysisResult?.randomQuote?.occupation ?? "N/A",
+            style: TextStyle(fontStyle: FontStyle.italic, color: Colors.white),
+            textAlign: TextAlign.center,
+          ),
+        ],
+      ),
     );
   }
 
-  void _onFindCounsellor() {}
+  void _onFindCounsellor() async {
+    log("authModel => $authModel");
+    final _model = new ConnectionModel(authModel: authModel);
+    await _model.fetchConnections();
+    await Navigator.pushNamed(
+      context,
+      CounsellorListPage.routeName,
+      arguments: CounsellorListPageArgs(
+        connectionModel:  _model,
+      ),
+    );
+    Navigator.pop(context);
+  }
 
   void _onSave() async {
     _fbKey?.currentState?.saveAndValidate();

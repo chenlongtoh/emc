@@ -25,6 +25,7 @@ class SentimentAnalyzer {
 
   List<double> analyseText(String text) {
     List<List<double>> inputTensor = tokenizeText(text); 
+    log("INPUT TENSOR => $inputTensor");
     var outputTensor = List.filled(TENSOR_OUTPUT_LEN, null).reshape([1, TENSOR_OUTPUT_LEN]);
     _interpreter.run(inputTensor, outputTensor);
     return outputTensor[0];
@@ -36,8 +37,8 @@ class SentimentAnalyzer {
       words = words.sublist(0, TENSOR_INPUT_MAX_LEN);
     }
     List<double> sequence = List<double>.from(words.map((word) {
-      final String lowercaseWord = word.toLowerCase();
-      return _vocab.containsKey(lowercaseWord) ? _vocab[lowercaseWord].toDouble() : _vocab[TOKENIZER_OOV_TOKEN].toDouble();
+      final String prepWord = _prepareWords(word);
+      return _vocab.containsKey(prepWord) ? _vocab[prepWord].toDouble() : _vocab[TOKENIZER_OOV_TOKEN].toDouble();
     }).toList());
 
     if (words.length != TENSOR_INPUT_MAX_LEN) {
@@ -46,5 +47,11 @@ class SentimentAnalyzer {
       sequence.fillRange(currentLength, TENSOR_INPUT_MAX_LEN, 0);
     }
     return [sequence];
+  }
+
+  _prepareWords(String word){
+    final String lowercaseWord = word.toLowerCase();
+    final String removedApostrophe = lowercaseWord.replaceAll("\'", "");
+    return removedApostrophe;
   }
 }

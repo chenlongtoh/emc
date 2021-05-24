@@ -32,6 +32,7 @@ class _StatisticsTabState extends State<StatisticsTab> with AutomaticKeepAliveCl
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return SmartRefresher(
       controller: _refreshController,
       onRefresh: _onRefresh,
@@ -73,7 +74,7 @@ class _StatisticsTabState extends State<StatisticsTab> with AutomaticKeepAliveCl
                                 height: 50,
                               ),
                               SizedBox(height: 10),
-                              Text("$happyEmotion (${(happyEmotion / totalCount).toStringAsFixed(1)}%)"),
+                              Text("$happyEmotion (${(happyEmotion / totalCount * 100).toStringAsFixed(1)}%)"),
                             ],
                           ),
                           Column(
@@ -83,7 +84,7 @@ class _StatisticsTabState extends State<StatisticsTab> with AutomaticKeepAliveCl
                                 height: 50,
                               ),
                               SizedBox(height: 10),
-                              Text("$sadEmotion (${(sadEmotion / totalCount).toStringAsFixed(1)}%)"),
+                              Text("$sadEmotion (${(sadEmotion / totalCount * 100).toStringAsFixed(1)}%)"),
                             ],
                           ),
                           Column(
@@ -93,7 +94,7 @@ class _StatisticsTabState extends State<StatisticsTab> with AutomaticKeepAliveCl
                                 height: 50,
                               ),
                               SizedBox(height: 10),
-                              Text("$angryEmotion (${(angryEmotion / totalCount).toStringAsFixed(1)}%)"),
+                              Text("$angryEmotion (${(angryEmotion / totalCount * 100).toStringAsFixed(1)}%)"),
                             ],
                           ),
                         ],
