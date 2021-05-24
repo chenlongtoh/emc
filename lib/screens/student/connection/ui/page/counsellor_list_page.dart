@@ -1,15 +1,11 @@
 import 'dart:developer';
 
 import 'package:emc/auth/model/entity/emc_user.dart';
-import 'package:emc/auth/model/view_model/auth_model.dart';
 import 'package:emc/common_widget/emc_scaffold.dart';
 import 'package:emc/common_widget/emc_shimmer.dart';
 import 'package:emc/screens/student/connection/model/view_model/connection_model.dart';
 import 'package:emc/screens/student/connection/ui/widgets/lecturer_item.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_easyloading/flutter_easyloading.dart';
-import 'package:provider/provider.dart';
-
 class CounsellorListPageArgs {
   final ConnectionModel connectionModel;
   CounsellorListPageArgs({this.connectionModel});

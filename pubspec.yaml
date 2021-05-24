@@ -32,6 +32,7 @@ dependencies:
   mailer: ^5.0.0
   tflite_flutter: ^0.6.0
   dialog_flowtter: ^0.3.1
+  progress_indicators: ^1.0.0
 
   # flutter_form_builder:
   #   git: https://github.com/Sportner/flutter_form_builder.git 
