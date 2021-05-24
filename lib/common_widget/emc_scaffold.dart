@@ -11,31 +11,34 @@ class EmcScaffold extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      extendBodyBehindAppBar: true,
-      appBar: appBar,
-      body: Container(
-        height: double.infinity,
-        width: double.infinity,
-        decoration: BoxDecoration(
-          image: DecorationImage(
-            image: AssetImage('assets/images/background-2.jpg'),
-            fit: BoxFit.cover,
+    return Stack(
+      children: [
+        SingleChildScrollView(
+          child: Image.asset(
+              "assets/images/background-2.jpg",
+              height: MediaQuery.of(context).size.height,
+              width: MediaQuery.of(context).size.width,
+              fit: BoxFit.cover,
+            ),
+        ),
+        Scaffold(
+          extendBodyBehindAppBar: true,
+          backgroundColor: Colors.transparent,
+          appBar: appBar,
+          body: SafeArea(
+            child: maskBackground
+                ? Container(
+                    decoration: BoxDecoration(
+                      color: EmcColors.whiteOverlay,
+                    ),
+                    constraints: BoxConstraints.expand(),
+                    child: body,
+                  )
+                : body,
           ),
+          floatingActionButton: floatingActionButton,
         ),
-        child: SafeArea(
-          child: maskBackground
-              ? Container(
-                  decoration: BoxDecoration(
-                    color: EmcColors.whiteOverlay,
-                  ),
-                  constraints: BoxConstraints.expand(),
-                  child: body,
-                )
-              : body,
-        ),
-      ),
-      floatingActionButton: floatingActionButton,
+      ],
     );
   }
 }

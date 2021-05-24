@@ -1,4 +1,8 @@
 class LoginForm {
-  static final EMAIL = "email";
-  static final PASSWORD = "password";
+  static const EMAIL = "email";
+  static const PASSWORD = "password";
+}
+
+class ForgotPasswordForm{
+  static const EMAIL = "email";
 }

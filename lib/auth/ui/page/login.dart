@@ -1,6 +1,6 @@
 import 'package:emc/auth/model/view_model/auth_model.dart';
+import 'package:emc/auth/ui/page/forgot_password_page.dart';
 import 'package:emc/screens/student/registration/ui/page/register.dart';
-import 'package:emc/util/router.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:emc/auth/constant.dart';
@@ -128,7 +128,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                     visualDensity: VisualDensity.compact,
                   ),
-                  onPressed: () => Navigator.pushNamed(context, RegisterScreen.routeName),
+                  onPressed: () => Navigator.pushNamed(context, ForgotPasswordPage.routeName),
                 ),
               ),
               Center(
