@@ -119,6 +119,12 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
       maskBackground: false,
       body: FormBuilder(
         key: _fbKey,
+        initialValue: {
+          ProfileUpdateForm.NAME: authModel?.emcUser?.name,
+          ProfileUpdateForm.OFFICE_NO: authModel?.emcUser?.officeNumber,
+          ProfileUpdateForm.QUALIFICATION: authModel?.emcUser?.qualification,
+          ProfileUpdateForm.QUOTE: authModel?.emcUser?.favouriteQuote,
+        },
         child: Stack(
           children: [
             Padding(

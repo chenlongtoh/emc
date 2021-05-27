@@ -6,6 +6,6 @@ class ProfileUpdateForm{
   static const PROFILE_PICTURE = "profilePicture";
   static const NAME = "name";
   static const QUALIFICATION = "qualification";
-  static const QUOTE = "qualification";
+  static const QUOTE = "quote";
   static const OFFICE_NO = "officeNo";
 }

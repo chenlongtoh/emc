@@ -43,8 +43,6 @@ class _CounsellorHomePageState extends State<CounsellorHomePage> {
     _refreshController.refreshCompleted();
   }
 
-  Future _fetchData() async {}
-
   @override
   Widget build(BuildContext context) {
     return EmcScaffold(
@@ -72,8 +70,6 @@ class _CounsellorHomePageState extends State<CounsellorHomePage> {
 
               List<Connection> connectedConnections = connectionList.where((connection) => connection.status == "connected").toList();
               List<Appointment> acceptedAppointments = appointmentList.where((appointment) => appointment.status == "accepted").toList();
-              log("connectedConnections => ${connectedConnections.length}");
-              log("acceptedAppointments => ${acceptedAppointments.length}");
               List<Connection> connectionRequests = connectionList.where((connection) => connection.status == "pending").toList();
               List<Appointment> pendingAppointments = appointmentList.where((appointment) => appointment.status == "pending").toList();
               return SmartRefresher(
@@ -86,7 +82,7 @@ class _CounsellorHomePageState extends State<CounsellorHomePage> {
                     Padding(
                       padding: const EdgeInsets.only(left: 20),
                       child: Text(
-                        "Dr Rajesh",
+                        _authModel?.emcUser?.name ?? "N/A",
                         style: TextStyle(
                           fontSize: 25,
                           fontWeight: FontWeight.bold,

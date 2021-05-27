@@ -8,7 +8,9 @@ import 'package:emc/screens/counsellor/appointment/model/view_model/appointment_
 import 'package:emc/screens/counsellor/appointment/ui/widget/appointment_details_card.dart';
 import 'package:emc/screens/counsellor/appointment/ui/widget/upcoming_appointment_card.dart';
 import 'package:emc/screens/counsellor/home/ui/widget/appointment_connection_summary_card.dart';
+import 'package:emc/util/form_util.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
@@ -20,6 +22,7 @@ class AppointmentPage extends StatefulWidget {
 class _AppointmentPageState extends State<AppointmentPage> {
   AppointmentModel _model;
   RefreshController _refreshController;
+  GlobalKey<FormBuilderState> _fbKey = new GlobalKey<FormBuilderState>();
 
   @override
   void initState() {
@@ -36,6 +39,44 @@ class _AppointmentPageState extends State<AppointmentPage> {
     await _model?.init();
     setState(() {});
     _refreshController.refreshCompleted();
+  }
+
+  void _onDeclineConnection(AppointmentModel model, Appointment appointment) async {
+    return showDialog<void>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Decline Message'),
+          content: SingleChildScrollView(
+            child: FormBuilder(
+              key: _fbKey,
+              child: FormBuilderTextField(
+                decoration: InputDecoration(
+                  hintText: "Optional",
+                ),
+                name: "declineMessage",
+              ),
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: Text("Cancel"),
+              onPressed: () => Navigator.pop(context),
+            ),
+            TextButton(
+              child: Text('Save'),
+              onPressed: () async {
+                _fbKey.currentState.saveAndValidate();
+                final String message = FormUtil.getFormValue(_fbKey, "declineMessage");
+                await model.declineAppointment(appointment, message);
+                setState(() {});
+                Navigator.pop(context);
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 
   @override
@@ -85,7 +126,7 @@ class _AppointmentPageState extends State<AppointmentPage> {
                                 return AppointmentDetailsCard(
                                   appointment: pendingAppointmentList[index],
                                   onAccept: () => model.acceptAppointment(pendingAppointmentList[index]?.appointmentId),
-                                  onDecline: () => model.declineAppointment(pendingAppointmentList[index]?.appointmentId),
+                                  onDecline: () => _onDeclineConnection(model, pendingAppointmentList[index]),
                                 );
                               },
                             );

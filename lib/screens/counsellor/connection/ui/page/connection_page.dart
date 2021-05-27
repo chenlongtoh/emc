@@ -151,7 +151,7 @@ class _ConnectionBodyState extends State<ConnectionBody> {
                   mainAxisSize: MainAxisSize.max,
                   children: [
                     Expanded(
-                      flex: 3,
+                      flex: 5,
                       child: Column(
                         children: [
                           Padding(
@@ -186,7 +186,7 @@ class _ConnectionBodyState extends State<ConnectionBody> {
                       ),
                     ),
                     Expanded(
-                      flex: 5,
+                      flex: 7,
                       child: Column(
                         children: [
                           Padding(

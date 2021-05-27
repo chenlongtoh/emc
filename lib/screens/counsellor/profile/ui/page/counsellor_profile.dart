@@ -1,6 +1,3 @@
-import 'dart:convert';
-import 'dart:developer';
-
 import 'package:emc/auth/model/entity/emc_user.dart';
 import 'package:emc/auth/model/view_model/auth_model.dart';
 import 'package:emc/common_widget/emc_button.dart';
@@ -13,6 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:emc/screens/counsellor/profile/ui/page/update_profile.dart';
 import '../../constant.dart';
+import 'package:emc/auth/ui/page/change_password_page.dart';
 
 class CounsellorProfilePageArgs {
   final String counsellorId;
@@ -186,12 +184,16 @@ class _CounsellorProfileState extends State<CounsellorProfile> {
                                     ),
                                     text: "View Schedule",
                                   ),
-                                  // @@ IMPORTANT @@
-                                if (!authModel.isStudent)
+                                if (!authModel.isStudent) ...[
                                   EmcButton(
                                     onPressed: () => Navigator.pushNamed(context, UpdateProfilePage.routeName),
                                     text: "Update Profile",
                                   ),
+                                  EmcButton(
+                                    onPressed: () => Navigator.pushNamed(context, ChangePasswordPage.routeName),
+                                    text: "Change Password",
+                                  ),
+                                ],
                                 if (!authModel.isStudent)
                                   EmcButton(
                                     onPressed: () async {
