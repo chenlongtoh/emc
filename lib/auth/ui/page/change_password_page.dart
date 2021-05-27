@@ -1,10 +1,8 @@
-import 'dart:developer';
-
+import 'package:emc/auth/constant.dart';
 import 'package:emc/auth/model/view_model/auth_model.dart';
+import 'package:emc/auth/service/change_password_service.dart';
 import 'package:emc/common_widget/emc_button.dart';
 import 'package:emc/common_widget/emc_scaffold.dart';
-import 'package:emc/screens/student/change_password/constant.dart';
-import 'package:emc/screens/student/change_password/service/change_password_service.dart';
 import 'package:emc/util/form_util.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
@@ -33,18 +31,23 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
         _fbKey,
         ChangePasswordFormField.NEW_PASSWORD,
       );
-      await ChangePasswordService.changePassword(oldPassword, newPassword).then(
-        (success) async {
-          if (success) {
-            AuthModel authModel = Provider.of<AuthModel>(context, listen: false);
-            await authModel.logout().then((_) {
-              EasyLoading.showSuccess("Your password is changed successfully, please login again");
-              Navigator.popUntil(context, (route) => route.isFirst);
-            });
-            return;
-          }
-        },
-      );
+      if (oldPassword == newPassword) {
+        EasyLoading.showError("Your old password is the same as the new one, please try again");
+        setState(() => _shouldAutovalidate = true);
+      } else {
+        await ChangePasswordService.changePassword(oldPassword, newPassword).then(
+          (success) async {
+            if (success) {
+              AuthModel authModel = Provider.of<AuthModel>(context, listen: false);
+              await authModel.logout().then((_) {
+                EasyLoading.showSuccess("Your password is changed successfully, please login again");
+                Navigator.popUntil(context, (route) => route.isFirst);
+              });
+              return;
+            }
+          },
+        );
+      }
     } else {
       setState(() => _shouldAutovalidate = true);
       EasyLoading.dismiss();
@@ -109,9 +112,6 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
                 FormBuilderValidators.required(context),
                 FormBuilderValidators.minLength(context, 8),
                 (value) {
-                  // log("Value -> $value");
-                  // log("Other V -> ${FormUtil.getFormValue(_fbKey, ChangePasswordFormField.NEW_PASSWORD)}");
-                  // _fbKey.currentState.
                   if (value == _newPasword) {
                     return null;
                   }

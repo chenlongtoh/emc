@@ -7,7 +7,7 @@ import 'package:emc/common_widget/emc_button.dart';
 import 'package:emc/common_widget/emc_scaffold.dart';
 import 'package:emc/common_widget/emc_shimmer.dart';
 import 'package:emc/constant.dart';
-import 'package:emc/screens/student/change_password/ui/page/change_password_page.dart';
+import 'package:emc/auth/ui/page/change_password_page.dart';
 import 'package:emc/screens/student/profile/model/student_profile_model.dart';
 import 'package:emc/screens/student/profile/ui/update_profile.dart';
 import 'package:flutter/material.dart';

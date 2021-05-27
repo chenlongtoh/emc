@@ -2,7 +2,7 @@ import 'package:emc/auth/index.dart';
 import 'package:emc/auth/ui/page/forgot_password_page.dart';
 import 'package:emc/screens/counsellor/schedule/ui/page/schedule_page.dart';
 import 'package:emc/screens/student/appointment/ui/page/counsellor_list_page.dart' as AppointmentCounsellorList;
-import 'package:emc/screens/student/change_password/ui/page/change_password_page.dart';
+import 'package:emc/auth/ui/page/change_password_page.dart';
 import 'package:emc/screens/student/chatbot/ui/page/analysis_result_page.dart';
 import 'package:emc/screens/student/connection/ui/page/counsellor_list_page.dart' as ConnectionCounsellorList;
 import 'package:emc/screens/student/home.dart';
