@@ -12,6 +12,7 @@ class EmcShimmerList extends StatelessWidget {
         highlightColor: Colors.grey[100],
         enabled: true,
         child: ListView.builder(
+          physics: const BouncingScrollPhysics(),
           itemBuilder: (_, __) => Padding(
             padding: const EdgeInsets.only(bottom: 28.0),
             child: Column(

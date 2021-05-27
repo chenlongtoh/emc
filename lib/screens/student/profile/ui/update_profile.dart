@@ -179,6 +179,7 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
                                 flex: 2,
                                 child: FormBuilderTextField(
                                   name: ProfileUpdateForm.MATRIC_NO,
+                                  textCapitalization: TextCapitalization.characters,
                                   validator: FormBuilderValidators.compose([
                                     FormBuilderValidators.required(context),
                                   ]),

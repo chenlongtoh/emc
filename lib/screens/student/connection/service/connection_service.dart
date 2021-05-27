@@ -28,7 +28,7 @@ class ConnectionService {
         var filteredList = snapshot.docs;
         filteredList.removeWhere((doc) => cidList.contains(doc.id));
         if (filteredList != null || filteredList.isNotEmpty) {
-          return filteredList.map((doc) => EmcUser.fromJson(doc?.data() ?? const {})).toList();
+          return filteredList.map((doc) => EmcUser.fromJson({...doc?.data(), "uid": doc.id} ?? const {})).toList();
         }
       }
     } on FirebaseException catch (e) {

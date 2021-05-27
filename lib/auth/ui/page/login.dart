@@ -80,6 +80,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                   fillColor: Colors.white,
                   filled: true,
+                  errorMaxLines: 2,
                 ),
               ),
               SizedBox(height: 10),
@@ -87,7 +88,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 name: LoginForm.PASSWORD,
                 validator: FormBuilderValidators.compose([
                   FormBuilderValidators.required(context),
-                  FormBuilderValidators.minLength(context, 7),
+                  FormBuilderValidators.minLength(context, 8),
                 ]),
                 decoration: InputDecoration(
                   hintText: "Password",
@@ -98,6 +99,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                   fillColor: Colors.white,
                   filled: true,
+                  errorMaxLines: 2,
                 ),
                 obscureText: true,
               ),

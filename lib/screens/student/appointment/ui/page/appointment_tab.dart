@@ -72,6 +72,7 @@ class _AppointmentTabState extends State<AppointmentTab> {
                       ),
                     )
                   : ListView.separated(
+                      physics: const BouncingScrollPhysics(),
                       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
                       itemCount: appointmentList.length,
                       separatorBuilder: (_, __) => SizedBox(height: 5),

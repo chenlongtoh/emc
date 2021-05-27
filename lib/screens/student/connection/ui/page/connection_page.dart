@@ -58,6 +58,7 @@ class _ConnectionPageState extends State<ConnectionPage> {
                     onRefresh: _onRefresh,
                     enablePullDown: true,
                     child: ListView.separated(
+                      physics: const BouncingScrollPhysics(),
                       separatorBuilder: (_, __) => SizedBox(height: 5),
                       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
                       itemCount: connectionList.length,
