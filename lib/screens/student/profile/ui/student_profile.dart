@@ -35,15 +35,11 @@ class StudentProfileState extends State<StudentProfile> {
   @override
   void initState() {
     super.initState();
-    model = new StudentProfileModel(uid: widget?.uid);
     authModel = Provider.of<AuthModel>(context, listen: false);
-  }
-
-  Future<EmcUser> _getStudentProfile() async {
+    model = new StudentProfileModel(uid: widget?.uid);
     if (!authModel.isStudent) {
-      return await model.getStudentProfile();
+      model.init();
     }
-    return authModel.emcUser;
   }
 
   Widget _buildProfileDetails(String matric, String name, String email) {
@@ -98,16 +94,18 @@ class StudentProfileState extends State<StudentProfile> {
 
   @override
   Widget build(BuildContext context) {
-    return EmcScaffold(
-      maskBackground: false,
-      appBar: AppBar(
-        title: Text('Profile'),
-      ),
-      body: FutureBuilder(
-        future: _getStudentProfile(),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.done) {
-            final EmcUser student = snapshot.data;
+    return ChangeNotifierProvider<StudentProfileModel>.value(
+      value: model,
+      child: EmcScaffold(
+        maskBackground: false,
+        appBar: AppBar(
+          title: Text('Profile'),
+        ),
+        body: Consumer2<AuthModel, StudentProfileModel>(
+          builder: (context, authModel, studentProfileModel, child) {
+            if (studentProfileModel.isLoading) return EmcShimmerList();
+
+            var student = authModel.isStudent ? authModel.emcUser : studentProfileModel.student;
             return Stack(
               children: [
                 Padding(
@@ -178,9 +176,8 @@ class StudentProfileState extends State<StudentProfile> {
                 ),
               ],
             );
-          }
-          return EmcShimmerList();
-        },
+          },
+        ),
       ),
     );
   }

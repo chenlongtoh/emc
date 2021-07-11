@@ -3,25 +3,37 @@ import 'dart:io';
 
 import 'package:emc/auth/model/entity/emc_user.dart';
 import 'package:emc/screens/student/profile/service/student_profile_service.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 
-class StudentProfileModel {
+class StudentProfileModel extends ChangeNotifier {
+  EmcUser student;
   final String uid;
-  EmcUser user;
+  bool isLoading = false;
 
   StudentProfileModel({this.uid});
 
-  Future getStudentProfile() async {
+  Future init() async {
+    setLoading();
     try {
       final response = await StudentProfileService.getStudentDetailsById(uid);
       if (response != null) {
-        user = EmcUser.fromJson(response);
+        student = EmcUser.fromJson(response);
       }
-      return user;
     } catch (e) {
       log("Error @ getStudentProfile => $e");
       EasyLoading.showError("Error => $e");
     }
-    return null;
+    setIdle();
+  }
+
+  setLoading() {
+    isLoading = true;
+    notifyListeners();
+  }
+
+  setIdle() {
+    isLoading = false;
+    notifyListeners();
   }
 }

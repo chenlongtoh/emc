@@ -31,9 +31,9 @@ class StudentProfileService {
 
       if (profilePicture != null) {
         Reference storageReference = FirebaseStorage.instance.ref().child("images/$sid/profile_pic/").child("${Path.basename(profilePicture.path)}");
-        await storageReference.putFile(profilePicture).then((value) {
-          storageReference.getDownloadURL().then((fileUrl) async {
-            print("getDownloadUrl.then $fileUrl");
+        await storageReference.putFile(profilePicture).then((value) async {
+          await storageReference.getDownloadURL().then((fileUrl) async {
+            log("getDownloadUrl.then $fileUrl");
             data["profilePicture"] = fileUrl;
           });
         });
@@ -86,9 +86,9 @@ class StudentProfileService {
         await doc.reference.update({"studentList.$sid": tmp});
       });
 
-      authModel.emcUser.name = name;
-      authModel.emcUser.matric = matric;
-      if (profilePicture != null) authModel.emcUser.profilePicture = data["profilePicture"];
+      authModel.name = name;
+      authModel.matric = matric;
+      if (profilePicture != null) authModel.profilePicture = data["profilePicture"];
 
       success = true;
     } on FirebaseException catch (e) {

@@ -2,14 +2,18 @@ import 'dart:developer';
 
 import 'package:emc/auth/model/entity/emc_user.dart';
 import 'package:emc/screens/counsellor/profile/service/profile_service.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 
-class ProfileModel {
+class ProfileModel extends ChangeNotifier {
+  EmcUser counsellor;
   String cid;
+  bool isLoading = false;
 
   ProfileModel({this.cid});
 
-  Future getCounsellorDetailsById() async {
+  Future init() async {
+    setLoading();
     try {
       final response = await ProfileService.getCounsellorById(cid);
       EmcUser emcUser;
@@ -17,11 +21,21 @@ class ProfileModel {
         emcUser = EmcUser.fromJson(response);
         emcUser.uid = cid;
       }
-      return emcUser;
+      counsellor = emcUser;
     } catch (e) {
       log("getCounsellorDetailsById Error => $e");
       EasyLoading.showError("Error => $e");
     }
-    return null;
+    setIdle();
+  }
+
+  setLoading() {
+    isLoading = true;
+    notifyListeners();
+  }
+
+  setIdle() {
+    isLoading = false;
+    notifyListeners();
   }
 }
