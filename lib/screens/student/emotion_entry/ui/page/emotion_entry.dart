@@ -48,13 +48,7 @@ class _EmotionEntryState extends State<EmotionEntry> {
   Widget build(BuildContext context) {
     return EmcScaffold(
       maskBackground: false,
-      appBar: AppBar(
-        actions: [
-          ProfileButton(
-            onTap: () => Navigator.pushNamed(context, StudentProfile.routeName),
-          )
-        ],
-      ),
+      appBar: AppBar(),
       body: GestureDetector(
         onTap: () => FocusScope.of(context).requestFocus(new FocusNode()),
         child: FormBuilder(
