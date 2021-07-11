@@ -64,6 +64,7 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
         key: _fbKey,
         autovalidateMode: _shouldAutovalidate ? AutovalidateMode.always : AutovalidateMode.disabled,
         child: ListView(
+          physics: new BouncingScrollPhysics(),
           padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 30),
           children: [
             SizedBox(height: 10),

@@ -45,6 +45,7 @@ class _LoginScreenState extends State<LoginScreen> {
           key: _fbKey,
           autovalidateMode: _shouldAutovalidate ? AutovalidateMode.onUserInteraction : AutovalidateMode.disabled,
           child: ListView(
+            physics: new BouncingScrollPhysics(),
             padding: const EdgeInsets.fromLTRB(60, 80, 60, 20),
             children: [
               Image.asset(

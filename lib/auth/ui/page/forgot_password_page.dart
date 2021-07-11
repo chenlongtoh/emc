@@ -57,6 +57,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
         autovalidateMode: _autoValidateMode,
         key: _fbKey,
         child: ListView(
+          physics: new BouncingScrollPhysics(),
           padding: const EdgeInsets.fromLTRB(20, 20, 20, 20),
           children: [
             Text(
