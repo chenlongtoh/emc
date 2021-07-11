@@ -93,7 +93,7 @@ class ChatModel with ChangeNotifier {
         log("dialogFlowEmotion => $dialogFlowEmotion");
         log("emotionDetected => $emotionDetected");
 
-        if (dialogFlowEmotion == emotionDetected) {
+        if (dialogFlowEmotion == emotionDetected || highestPrediction > 0.8) {
           log("Came here => camehere");
           randomQuote = await QuoteService.genrateRandomQuote();
           analysisResult = new AnalysisResult(
