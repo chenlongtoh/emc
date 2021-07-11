@@ -146,6 +146,7 @@ class ScheduleModel with ChangeNotifier {
       if (scheduleId != null) {
         success = true;
         _tmpSchedule.docId = scheduleId;
+        schedule = _tmpSchedule;
       }
     } else {
       Map<String, dynamic> data = {
@@ -178,6 +179,7 @@ class ScheduleModel with ChangeNotifier {
         "startTime": startDate.millisecondsSinceEpoch,
         "endTime": endDate.millisecondsSinceEpoch,
         "status": "pending",
+        "scheduleId": schedule?.docId ?? "-",
         "student": studentData,
       };
       await AppointmentService.insertAppointment(appointmentData);

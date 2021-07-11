@@ -157,6 +157,7 @@ class Schedule extends StatelessWidget {
         shouldMaskDetails: authModel.isStudent,
         bookedBySelf: sid == authModel?.user?.uid,
         isPending: status == "pending",
+        isAccepted: status == "accepted",
       );
     } else if (model.schedule?.blockedSlot?.containsKey(index) ?? false) {
       return model?.editMode == ScheduleEditMode.openSlot

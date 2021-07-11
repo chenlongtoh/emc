@@ -16,6 +16,7 @@ class ScheduleCard extends StatelessWidget {
   final bool shouldMaskDetails;
   final bool bookedBySelf;
   final bool isPending;
+  final bool isAccepted;
 
   const ScheduleCard({
     this.status,
@@ -27,19 +28,26 @@ class ScheduleCard extends StatelessWidget {
     this.shouldMaskDetails = false,
     this.bookedBySelf = false,
     this.isPending = false,
+    this.isAccepted = false,
   });
 
   Color _getLabellingColor() {
+    if(shouldMaskDetails && !bookedBySelf) return Colors.red;
     switch (status) {
-      case ScheduleStatus.blocked:
-        return Colors.red;
       case ScheduleStatus.booked:
         if (isPending) return Colors.grey;
-        if (shouldMaskDetails) return Colors.red;
-        return Colors.green;
+        if (isAccepted) return Colors.green;
+        return Colors.red;
       default:
-        return null;
+        return Colors.red;
     }
+  }
+
+  _getCardInnerText() {
+    if (status != ScheduleStatus.booked) return "Blocked for:";
+    if (isPending) return 'Pending appointment with:';
+    if (isAccepted) return 'Accepted appointment with:';
+    return "Rejected appointment with:";
   }
 
   @override
@@ -69,13 +77,19 @@ class ScheduleCard extends StatelessWidget {
                   padding: const EdgeInsets.all(5),
                   child: shouldMaskDetails
                       ? Center(
-                          child: Text(bookedBySelf ? "Booked by you" : "Booked by other studet"),
+                          child: Text(bookedBySelf
+                              ? isPending
+                                  ? "Pending Appointment"
+                                  : isAccepted
+                                      ? "Accepted Appointment"
+                                      : "Rejected Apointment"
+                              : "Booked by other student"),
                         )
                       : Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              status == ScheduleStatus.booked ? "${isPending ? 'Pending appointment' : 'Appointment'} with:" : "Blocked for:",
+                              _getCardInnerText(),
                               style: TextStyle(
                                 color: EmcColors.grey,
                                 fontSize: EmcFontSize.subtitle10,
