@@ -125,7 +125,7 @@ class _AppointmentPageState extends State<AppointmentPage> {
                               itemBuilder: (context, index) {
                                 return AppointmentDetailsCard(
                                   appointment: pendingAppointmentList[index],
-                                  onAccept: () => model.acceptAppointment(pendingAppointmentList[index]?.appointmentId),
+                                  onAccept: () => model.acceptAppointment(pendingAppointmentList[index]),
                                   onDecline: () => _onDeclineConnection(model, pendingAppointmentList[index]),
                                 );
                               },

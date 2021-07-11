@@ -113,4 +113,23 @@ class ScheduleService {
     }
     return null;
   }
+
+  static Future updateBookedSlotStatus(String slotId, String status, num slot) async {
+    try {
+      CollectionReference schedule = FirebaseFirestore.instance.collection("schedule");
+      await schedule.doc(slotId).update({ "bookedSlot.$slot.status": status});
+      // return EmcUser.fromJson({
+      //   ...snapshot.data(),
+      //   "uid": uid,
+      // });
+      return true;
+    } on FirebaseException catch (error) {
+      log("Error @ getCounsellorById => ${error.message}");
+      EasyLoading.showError("Error: ${error.message}");
+    } catch (error) {
+      log("Error @ getCounsellorById => $error");
+      EasyLoading.showError("Error => $error");
+    }
+    return false;
+  }
 }

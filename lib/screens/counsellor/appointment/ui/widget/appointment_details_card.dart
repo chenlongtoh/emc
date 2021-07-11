@@ -1,7 +1,7 @@
 import 'package:emc/screens/counsellor/appointment/model/entity/appointment.dart';
-import 'package:emc/screens/counsellor/connection/model/entity/connection.dart';
 import 'package:emc/screens/counsellor/home/constant.dart';
 import 'package:emc/screens/student/profile/ui/student_profile.dart';
+import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -16,7 +16,7 @@ class AppointmentDetailsCard extends StatelessWidget {
     final DateTime startDate = new DateTime.fromMillisecondsSinceEpoch(appointment.startTime);
     final DateTime endDate = new DateTime.fromMillisecondsSinceEpoch(appointment.endTime);
     final String datetimeStr = "${DateFormat("dd MMM yyyy ha").format(startDate)} - ${DateFormat("ha").format(endDate)}";
-    
+
     return Text(
       datetimeStr,
       style: TextStyle(color: Colors.white),
@@ -25,6 +25,7 @@ class AppointmentDetailsCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    log("appointment?.student?.profilePicture => ${appointment?.student?.profilePicture == null}");
     return Container(
       child: Column(
         children: [
@@ -77,7 +78,7 @@ class AppointmentDetailsCard extends StatelessWidget {
                     children: [
                       CircleAvatar(
                         radius: 25,
-                        backgroundImage: appointment?.student?.profilePicture == null
+                        backgroundImage: appointment?.student?.profilePicture?.isEmpty ?? true
                             ? AssetImage("assets/images/default_avatar.png")
                             : NetworkImage(appointment?.student?.profilePicture),
                       ),
@@ -88,6 +89,15 @@ class AppointmentDetailsCard extends StatelessWidget {
                           overflow: TextOverflow.ellipsis,
                         ),
                       ),
+                      SizedBox(width: 10),
+                      IconButton(
+                        icon: Icon(Icons.info_outline),
+                        onPressed: () => Navigator.pushNamed(
+                          context,
+                          StudentProfile.routeName,
+                          arguments: StudentProfilePageArgs(studentId: appointment?.student?.sid),
+                        ),
+                      )
                     ],
                   ),
                 ),

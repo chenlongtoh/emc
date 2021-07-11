@@ -5,9 +5,12 @@ import 'package:emc/auth/model/entity/emc_user.dart';
 import 'package:emc/auth/model/view_model/auth_model.dart';
 import 'package:emc/screens/counsellor/appointment/model/entity/appointment.dart';
 import 'package:emc/screens/counsellor/appointment/service/appointment_service.dart';
+import 'package:emc/screens/counsellor/schedule/constant.dart';
+import 'package:emc/screens/counsellor/schedule/service/schedule_service.dart';
 import 'package:emc/util/email_util.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:intl/intl.dart';
 
 class AppointmentModel with ChangeNotifier {
   final AuthModel authModel;
@@ -39,10 +42,11 @@ class AppointmentModel with ChangeNotifier {
     setIdle();
   }
 
-  Future acceptAppointment(String appointmentId) async {
+  Future acceptAppointment(Appointment appointment) async {
     EasyLoading.show();
-    bool success = await AppointmentService.updateAppointmentStatus(appointmentId, {"status": "accepted"});
+    bool success = await AppointmentService.updateAppointmentStatus(appointment?.appointmentId, {"status": "accepted"});
     if (success) {
+        await ScheduleService.updateBookedSlotStatus(appointment?.scheduleId, "accepted", _getSlotNumber(appointment?.startTime));
       EasyLoading.dismiss();
       init();
     }
@@ -54,6 +58,7 @@ class AppointmentModel with ChangeNotifier {
       EasyLoading.show();
       bool success = await AppointmentService.updateAppointmentStatus(appointmentId, {"status": "declined"});
       if (success) {
+        await ScheduleService.updateBookedSlotStatus(appointment?.scheduleId, "declined", _getSlotNumber(appointment?.startTime));
         final DocumentSnapshot snapshot = await FirebaseFirestore.instance.collection("users").doc(appointment.student.sid).get();
         final EmcUser student = EmcUser.fromJson(snapshot.data());
 
@@ -78,6 +83,12 @@ class AppointmentModel with ChangeNotifier {
     }
   }
 
+  _getSlotNumber(num startTime){
+    DateTime date = DateTime.fromMillisecondsSinceEpoch(startTime);
+    String timeString = DateFormat("h: mm").format(date);
+    return SCHEDULE_LABELS.indexOf(timeString);
+  }
+  
   setLoading() {
     isLoading = true;
     notifyListeners();
