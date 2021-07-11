@@ -34,7 +34,7 @@ class _ProfileFormState extends State<ProfileForm> {
               title: Text("Take a photo"),
               onTap: () async {
                 final File image = await getImage(ImageSource.camera);
-                if(image != null){
+                if (image != null) {
                   field.didChange(image);
                   setState(() => _image = image);
                 }
@@ -46,7 +46,7 @@ class _ProfileFormState extends State<ProfileForm> {
               title: Text("Pick from gallery"),
               onTap: () async {
                 final File image = await getImage(ImageSource.gallery);
-                if(image != null){
+                if (image != null) {
                   field.didChange(image);
                   setState(() => _image = image);
                 }
@@ -125,6 +125,7 @@ class _ProfileFormState extends State<ProfileForm> {
               isDense: true,
               border: new OutlineInputBorder(),
               labelText: "Name",
+              errorMaxLines: 2,
             ),
           ),
           SizedBox(height: 8),
@@ -138,6 +139,7 @@ class _ProfileFormState extends State<ProfileForm> {
               isDense: true,
               border: OutlineInputBorder(),
               labelText: "Matric",
+              errorMaxLines: 2,
             ),
           ),
           // FormBuilderDateTimePicker(
