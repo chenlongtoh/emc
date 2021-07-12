@@ -55,6 +55,10 @@ class _CounsellorHomePageState extends State<CounsellorHomePage> {
             fontSize: 15,
           ),
         ),
+        actions: [
+          ProfileButton(darkStyle: true, onTap: () => Navigator.pushNamed(context, CounsellorProfile.routeName)),
+          SizedBox(width: 10),
+        ],
       ),
       body: FutureBuilder(
           future: _data,

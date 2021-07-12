@@ -27,7 +27,7 @@ class _LoginScreenState extends State<LoginScreen> {
       final String password = _fbKey?.currentState?.value[LoginForm.PASSWORD] ?? "";
       final AuthModel authModel = Provider.of<AuthModel>(context, listen: false);
       await authModel.login(
-        email: email.trim(),
+        email: email,
         password: password,
       );
     } else {

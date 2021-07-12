@@ -1,4 +1,3 @@
-import 'package:emc/screens/student/profile/ui/student_profile.dart';
 import 'package:flutter/material.dart';
 import 'package:emc/screens/student/appointment/index.dart';
 import 'package:emc/screens/student/emotion_entry/index.dart';
@@ -19,7 +18,6 @@ class _StudentHomeState extends State<StudentHome> {
     Appointment(),
     ChatbotPage(),
     EmotionHistory(),
-    StudentProfile(),
   ];
 
   int _currentIndex = 0;
@@ -38,7 +36,6 @@ class _StudentHomeState extends State<StudentHome> {
         index: _currentIndex
       ),
       bottomNavigationBar: BottomNavigationBar(
-        showUnselectedLabels: true,
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
             icon: Icon(Icons.home),
@@ -59,10 +56,6 @@ class _StudentHomeState extends State<StudentHome> {
           BottomNavigationBarItem(
             icon: Icon(Icons.today),
             label: 'History',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person),
-            label: 'Profile',
           ),
         ],
         currentIndex: _currentIndex,

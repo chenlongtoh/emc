@@ -1,4 +1,3 @@
-import 'package:emc/screens/counsellor/profile/ui/page/counsellor_profile.dart';
 import 'package:flutter/material.dart';
 
 import 'appointment/ui/page/appointment_page.dart';
@@ -32,12 +31,10 @@ class _CounsellorHomeState extends State<CounsellorHome> {
           ConnectionPage(),
           AppointmentPage(),
           SchedulePage(),
-          CounsellorProfile(),
         ],
         index: _currentIndex,
       ),
       bottomNavigationBar: BottomNavigationBar(
-        showUnselectedLabels: true,
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
             icon: Icon(Icons.home),
@@ -54,10 +51,6 @@ class _CounsellorHomeState extends State<CounsellorHome> {
           BottomNavigationBarItem(
             icon: Icon(Icons.today),
             label: 'Schedule',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person),
-            label: 'Profile',
           ),
         ],
         currentIndex: _currentIndex,
