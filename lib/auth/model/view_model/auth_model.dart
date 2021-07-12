@@ -48,34 +48,5 @@ class AuthModel with ChangeNotifier {
     notifyListeners();
   }
 
-  set name(String name) {
-    emcUser.name = name;
-    notifyListeners();
-  }
-  
-  set matric(String matric) {
-    emcUser.matric = matric;
-    notifyListeners();
-  }
-  set officeNumber(String officeNumber) {
-    emcUser.officeNumber = officeNumber;
-    notifyListeners();
-  }
-
-  set favouriteQuote(String favouriteQuote) {
-    emcUser.favouriteQuote = favouriteQuote;
-    notifyListeners();
-  }
-
-  set qualification(String qualification) {
-    emcUser.qualification = qualification;
-    notifyListeners();
-  }
-
-  set profilePicture(String profilePicture){
-    emcUser.profilePicture = profilePicture;
-    notifyListeners();
-  }
-
   bool get isStudent => emcUser?.isStudent ?? false;
 }

@@ -66,11 +66,11 @@ class ProfileService {
         await doc.reference.update({"counsellor": data});
       });
 
-      authModel.name = name;
-      authModel.officeNumber = officeNo;
-      authModel.favouriteQuote = quote;
-      authModel.qualification = qualification;
-      if (profilePicture != null) authModel.profilePicture = data["profilePicture"];
+      authModel.emcUser.name = name;
+      authModel.emcUser.officeNumber = officeNo;
+      authModel.emcUser.favouriteQuote = quote;
+      authModel.emcUser.qualification = qualification;
+      if (profilePicture != null) authModel.emcUser.profilePicture = data["profilePicture"];
 
       success = true;
     } on FirebaseException catch (e) {

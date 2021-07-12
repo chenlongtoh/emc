@@ -35,8 +35,14 @@ class _CounsellorProfileState extends State<CounsellorProfile> {
     super.initState();
     counsellorProfileModel = new ProfileModel(cid: widget?.args?.counsellorId);
     authModel = Provider.of<AuthModel>(context, listen: false);
+  }
+
+  Future<EmcUser> _getCounsellorProfile() async {
     if (authModel.isStudent) {
-      counsellorProfileModel.init();
+      var x = await counsellorProfileModel.getCounsellorDetailsById();
+      return x;
+    } else {
+      return authModel.emcUser;
     }
   }
 
@@ -136,18 +142,16 @@ class _CounsellorProfileState extends State<CounsellorProfile> {
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider.value(
-      value: counsellorProfileModel,
-      child: EmcScaffold(
-        maskBackground: false,
-        appBar: AppBar(
-          title: Text('Counsellor Profile'),
-        ),
-        body: Consumer2<AuthModel, ProfileModel>(
-          builder: (context, authModel, profileModel, child) {
-            if (profileModel.isLoading) return EmcShimmerList();
-            var counsellor = authModel.isStudent ? profileModel.counsellor : authModel.emcUser;
-
+    return EmcScaffold(
+      maskBackground: false,
+      appBar: AppBar(
+        title: Text('Counsellor Profile'),
+      ),
+      body: FutureBuilder(
+        future: _getCounsellorProfile(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.done) {
+            final EmcUser counsellor = snapshot.data;
             return Stack(
               children: [
                 Padding(
@@ -233,8 +237,9 @@ class _CounsellorProfileState extends State<CounsellorProfile> {
                 ),
               ],
             );
-          },
-        ),
+          }
+          return EmcShimmerList();
+        },
       ),
     );
   }
