@@ -16,7 +16,7 @@ class CounsellorListItem extends StatelessWidget {
           CircleAvatar(
             radius: 25,
             backgroundImage:
-                counsellor?.profilePicture != null ? NetworkImage(counsellor.profilePicture) : AssetImage("assets/images/default_avatar.png"),
+                counsellor?.profilePicture?.isNotEmpty ?? false ? NetworkImage(counsellor.profilePicture) : AssetImage("assets/images/default_avatar.png"),
           ),
           Expanded(
             child: Padding(

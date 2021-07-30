@@ -35,7 +35,7 @@ class UpcomingAppointmentCard extends StatelessWidget {
         children: [
           CircleAvatar(
             radius: 25,
-            backgroundImage: appointment?.student?.profilePicture == null
+            backgroundImage: appointment?.student?.profilePicture?.isEmpty ?? true
                 ? AssetImage("assets/images/default_avatar.png")
                 : NetworkImage(appointment?.student?.profilePicture),
           ),

@@ -220,7 +220,7 @@ class _CounsellorProfileState extends State<CounsellorProfile> {
                           backgroundColor: Colors.white,
                           child: CircleAvatar(
                             radius: AVATAR_RADIUS,
-                            backgroundImage: counsellor?.profilePicture != null
+                            backgroundImage: counsellor?.profilePicture?.isNotEmpty ?? false
                                 ? NetworkImage(counsellor?.profilePicture)
                                 : AssetImage("assets/images/default_avatar.png"),
                           ),

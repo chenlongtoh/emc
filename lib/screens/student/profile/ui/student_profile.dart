@@ -160,7 +160,7 @@ class StudentProfileState extends State<StudentProfile> {
                           backgroundColor: Colors.white,
                           child: CircleAvatar(
                             radius: AVATAR_RADIUS,
-                            backgroundImage: student?.profilePicture != null
+                            backgroundImage: student?.profilePicture?.isNotEmpty ?? false
                                 ? NetworkImage(student?.profilePicture)
                                 : AssetImage("assets/images/default_avatar.png"),
                           ),

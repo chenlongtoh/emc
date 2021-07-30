@@ -75,7 +75,7 @@ class ConnectionDetailsCard extends StatelessWidget {
                     children: [
                       CircleAvatar(
                         radius: 25,
-                        backgroundImage: connection?.connectedStudent?.profilePicture == null
+                        backgroundImage: connection?.connectedStudent?.profilePicture?.isEmpty ?? true
                             ? AssetImage("assets/images/default_avatar.png")
                             : NetworkImage(connection?.connectedStudent?.profilePicture),
                       ),

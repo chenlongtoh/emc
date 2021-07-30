@@ -51,7 +51,7 @@ class ConnectedStudentCard extends StatelessWidget {
               child: CircleAvatar(
                 radius: 30,
                 backgroundImage:
-                    (imageUri != null && imageUri.isNotEmpty) ? NetworkImage(imageUri) : AssetImage("assets/images/default_avatar.png"),
+                    imageUri?.isNotEmpty ?? false ? NetworkImage(imageUri) : AssetImage("assets/images/default_avatar.png"),
               ),
             ),
             Expanded(
