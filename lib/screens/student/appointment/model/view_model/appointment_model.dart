@@ -27,7 +27,10 @@ class AppointmentModel with ChangeNotifier {
     allAppointment.forEach((appointment) {
       switch (appointment.status) {
         case "accepted":
-          acceptedAppointment.add(appointment);
+          if (_hasExpired(appointment))
+            declinedAppointment.add(appointment);
+          else
+            acceptedAppointment.add(appointment);
           break;
         case "pending":
           if (_hasExpired(appointment))
@@ -57,13 +60,10 @@ class AppointmentModel with ChangeNotifier {
 
   bool _hasExpired(Appointment appointment) {
     DateTime appointmentDateTime = DateTime.fromMillisecondsSinceEpoch(appointment.startTime);
-    if (now.year <= appointmentDateTime.year){
-      if(now.year == appointmentDateTime.year && now.month <= appointmentDateTime.month){
-        if(now.month == appointmentDateTime.month && now.day <= appointmentDateTime.day)
-          return now.day == appointmentDateTime.day && now.hour > appointmentDateTime.hour;
-      }
+    if (now.difference(appointmentDateTime) < Duration(days: 1) && now.day == appointmentDateTime.day) {
+      return now.hour > appointmentDateTime.hour;
     }
-    return true;
+    return now.isAfter(appointmentDateTime);
   }
 
   setLoading() {

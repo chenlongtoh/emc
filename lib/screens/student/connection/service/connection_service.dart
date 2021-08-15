@@ -10,7 +10,7 @@ class ConnectionService {
     try {
       CollectionReference connection = FirebaseFirestore.instance.collection("connection");
       final QuerySnapshot connectionSnapshot = await connection.where('student.sid', isEqualTo: uid).get();
-      return connectionSnapshot.docs.map((doc) => Connection.fromJson(doc?.data() ?? const {})).toList();
+      return connectionSnapshot.docs.map((doc) => Connection.fromJson({"cid": doc.id, ...doc?.data()})).toList();
     } on FirebaseException catch (e) {
       EasyLoading.showError("Error => $e");
     }
@@ -44,6 +44,21 @@ class ConnectionService {
     try {
       CollectionReference connection = FirebaseFirestore.instance.collection("connection");
       await connection.add(data);
+      success = true;
+    } on FirebaseException catch (e) {
+      EasyLoading.showError("Error => $e");
+    }
+    return success;
+  }
+
+  static Future updateConnectionToPending(String cid) async {
+    bool success = false;
+    try {
+      CollectionReference connection = FirebaseFirestore.instance.collection("connection");
+      await connection.doc(cid).update({
+        "status": "pending",
+        "date": DateTime.now().millisecondsSinceEpoch,
+      });
       success = true;
     } on FirebaseException catch (e) {
       EasyLoading.showError("Error => $e");

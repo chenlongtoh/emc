@@ -27,11 +27,13 @@ class CounsellorHomePage extends StatefulWidget {
 class _CounsellorHomePageState extends State<CounsellorHomePage> {
   AuthModel _authModel;
   RefreshController _refreshController;
+  DateTime _now;
   Future _data;
 
   @override
   void initState() {
     super.initState();
+    _now = DateTime.now();
     _refreshController = new RefreshController(initialRefresh: false);
     _authModel = Provider.of<AuthModel>(context, listen: false);
     _data = HomeService.getConnectionsAndAppointments(_authModel?.user?.uid);
@@ -41,6 +43,14 @@ class _CounsellorHomePageState extends State<CounsellorHomePage> {
     _data = HomeService.getConnectionsAndAppointments(_authModel?.user?.uid);
     setState(() {});
     _refreshController.refreshCompleted();
+  }
+
+  bool _hasExpired(Appointment appointment) {
+    DateTime appointmentDateTime = DateTime.fromMillisecondsSinceEpoch(appointment.startTime);
+    if(_now.difference(appointmentDateTime) < Duration(days: 1) && _now.day == appointmentDateTime.day){
+      return _now.hour > appointmentDateTime.hour;
+    }
+    return _now.isAfter(appointmentDateTime);
   }
 
   @override
@@ -69,9 +79,9 @@ class _CounsellorHomePageState extends State<CounsellorHomePage> {
               List<Appointment> appointmentList = data[1];
 
               List<Connection> connectedConnections = connectionList.where((connection) => connection.status == "connected").toList();
-              List<Appointment> acceptedAppointments = appointmentList.where((appointment) => appointment.status == "accepted").toList();
+              List<Appointment> acceptedAppointments = appointmentList.where((appointment) => appointment.status == "accepted" && !_hasExpired(appointment)).toList();
               List<Connection> connectionRequests = connectionList.where((connection) => connection.status == "pending").toList();
-              List<Appointment> pendingAppointments = appointmentList.where((appointment) => appointment.status == "pending").toList();
+              List<Appointment> pendingAppointments = appointmentList.where((appointment) => appointment.status == "pending"&& !_hasExpired(appointment)).toList();
               return SmartRefresher(
                 controller: _refreshController,
                 onRefresh: _onRefresh,
@@ -103,7 +113,7 @@ class _CounsellorHomePageState extends State<CounsellorHomePage> {
                     LimitedBox(
                       maxHeight: 150,
                       child: acceptedAppointments.length == 0
-                          ? Center(child: Text("No Appointments Found"))
+                          ? Center(child: Text("No Upcoming Appointments Found"))
                           : ListView.separated(
                               padding: const EdgeInsets.symmetric(horizontal: 20),
                               separatorBuilder: (_, __) => SizedBox(width: 20),

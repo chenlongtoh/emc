@@ -15,7 +15,7 @@ import 'package:intl/intl.dart';
 class AppointmentModel with ChangeNotifier {
   final AuthModel authModel;
   AppointmentModel({this.authModel});
-
+  DateTime now;
   bool isLoading = false;
 
   List<Appointment> upcomingAppointmentList = [];
@@ -23,6 +23,7 @@ class AppointmentModel with ChangeNotifier {
 
   init() async {
     setLoading();
+    now = DateTime.now();
     upcomingAppointmentList.clear();
     pendingAppointmentList.clear();
 
@@ -30,7 +31,7 @@ class AppointmentModel with ChangeNotifier {
     appointmentList.forEach((appointment) {
       switch (appointment.status ?? "") {
         case "accepted":
-          upcomingAppointmentList.add(appointment);
+          if (!_hasExpired(appointment)) upcomingAppointmentList.add(appointment);
           break;
         case "pending":
           pendingAppointmentList.add(appointment);
@@ -46,7 +47,7 @@ class AppointmentModel with ChangeNotifier {
     EasyLoading.show();
     bool success = await AppointmentService.updateAppointmentStatus(appointment?.appointmentId, {"status": "accepted"});
     if (success) {
-        await ScheduleService.updateBookedSlotStatus(appointment?.scheduleId, "accepted", _getSlotNumber(appointment?.startTime));
+      await ScheduleService.updateBookedSlotStatus(appointment?.scheduleId, "accepted", _getSlotNumber(appointment?.startTime));
       EasyLoading.dismiss();
       init();
     }
@@ -63,14 +64,10 @@ class AppointmentModel with ChangeNotifier {
         final EmcUser student = EmcUser.fromJson(snapshot.data());
 
         String html = "<h3>Your appointmnet to ${authModel?.emcUser?.name} has been declined</h3>\n";
-        if(message != null){
+        if (message != null) {
           html = "$html<p style='color:blue; font-weight: bold;'>$message</p>";
         }
-        await EmailUtil.sendEmail(
-          targetEmail: "hugmypants17@gmail.com",
-          html: html,
-          subject: "Appointment Declined Notification"
-        );
+        await EmailUtil.sendEmail(targetEmail: "hugmypants17@gmail.com", html: html, subject: "Appointment Declined Notification");
         EasyLoading.dismiss();
         init();
       }
@@ -83,12 +80,20 @@ class AppointmentModel with ChangeNotifier {
     }
   }
 
-  _getSlotNumber(num startTime){
+  bool _hasExpired(Appointment appointment) {
+    DateTime appointmentDateTime = DateTime.fromMillisecondsSinceEpoch(appointment.startTime);
+    if (now.difference(appointmentDateTime) < Duration(days: 1) && now.day == appointmentDateTime.day) {
+      return now.hour > appointmentDateTime.hour;
+    }
+    return now.isAfter(appointmentDateTime);
+  }
+
+  _getSlotNumber(num startTime) {
     DateTime date = DateTime.fromMillisecondsSinceEpoch(startTime);
     String timeString = DateFormat("h: mm").format(date);
     return SCHEDULE_LABELS.indexOf(timeString);
   }
-  
+
   setLoading() {
     isLoading = true;
     notifyListeners();

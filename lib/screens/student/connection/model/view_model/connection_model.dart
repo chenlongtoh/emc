@@ -24,28 +24,38 @@ class ConnectionModel {
     return await ConnectionService.getCounsellorsExcept(
       connectionList == null || connectionList.length == 0
           ? null
-          : connectionList.map((connection) => connection?.connectedCounsellor?.cid ?? "").toList(),
+          : connectionList
+              .where((connection) => connection.status != "declined")
+              .map((connection) => connection?.connectedCounsellor?.cid ?? "")
+              .toList(),
     );
   }
 
   Future connectToCounsellor(EmcUser counsellor) async {
     EasyLoading.show();
-    Map<String, dynamic> data = {
-      "counsellor": {
-        "cid": counsellor?.uid ?? "-",
-        "name": counsellor?.name ?? "-",
-        "profilePicture": counsellor?.profilePicture,
-        "qualification": counsellor?.qualification ?? "-",
-      },
-      "date": DateTime.now().millisecondsSinceEpoch,
-      "status": "pending",
-      "student": {
-        "sid": authModel?.user?.uid ?? "-",
-        "name": authModel?.emcUser?.name ?? "-",
-        "profilePicture": authModel?.emcUser?.profilePicture,
-      }
-    };
-    bool success = await ConnectionService.createConnection(data);
+    bool success = false;
+    if (connectionList.firstWhere((connection) => connection.connectedCounsellor.cid == counsellor.uid, orElse: () => null) != null) {
+      Connection connection = connectionList.firstWhere((connection) => connection.connectedCounsellor.cid == counsellor.uid, orElse: () => null);
+      success = await ConnectionService.updateConnectionToPending(connection?.cid ?? "");
+    } else {
+      Map<String, dynamic> data = {
+        "counsellor": {
+          "cid": counsellor?.uid ?? "-",
+          "name": counsellor?.name ?? "-",
+          "profilePicture": counsellor?.profilePicture,
+          "qualification": counsellor?.qualification ?? "-",
+        },
+        "date": DateTime.now().millisecondsSinceEpoch,
+        "status": "pending",
+        "student": {
+          "sid": authModel?.user?.uid ?? "-",
+          "name": authModel?.emcUser?.name ?? "-",
+          "profilePicture": authModel?.emcUser?.profilePicture,
+        }
+      };
+      success = await ConnectionService.createConnection(data);
+    }
+
     if (success) {
       final String html =
           "<h3>You have a connection request!</h3><br><p><span style='color:blue; font-weight: bold;'>${authModel?.emcUser?.name}</span> just requested to connect to you</p>\n";

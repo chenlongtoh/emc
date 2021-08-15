@@ -89,7 +89,7 @@ class _AnalysisResultPageState extends State<AnalysisResultPage> {
     }
     final String notes = (_fbKey?.currentState?.value ?? const {})[EmotionEntryForm.NOTES] ?? "";
     log("notes => $notes");
-    final String emotionString = EMOTION_STRING_MAP[Emotion.happy];
+    final String emotionString =  EMOTION_STRING_MAP[widget.args?.analysisResult?.emotionDetected ?? Emotion.happy];
     bool success = await _model.save(emotionString, notes);
     if (success) {
       _fbKey?.currentState?.reset();
